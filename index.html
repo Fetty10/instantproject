@@ -943,25 +943,9 @@ function generateDocument(od) {
 
   var body = '';
 
-  // COVER PAGE
-  body += '{\\pard\\qc\\sl480\\slmult1 \\par\\par\\par\n';
-  body += '\\b\\fs36 INSTANTPROJECT ACADEMIC SERVICES\\b0\\fs24\\par\n';
-  body += '\\par\n';
-  body += '\\b\\fs28 ' + escRTF(svcLabel.toUpperCase()) + '\\b0\\fs24\\par\n';
-  body += '\\par\\par\n';
-  body += '\\b\\fs26 ' + escRTF(topic.toUpperCase()) + '\\b0\\fs24\\par\n';
-  body += '\\par\\par\n';
-  body += 'Submitted by:\\par\n';
-  body += '\\b ' + escRTF(name) + '\\b0\\par\n';
-  body += '\\par\n';
-  body += 'Department of ' + escRTF(dept) + '\\par\n';
-  body += 'Level: ' + escRTF(level) + '\\par\n';
-  body += 'Referencing Style: ' + escRTF(refStyle) + '\\par\n';
-  if (guidelines) body += '\\par Special Instructions: ' + escRTF(guidelines) + '\\par\n';
-  body += '\\par\\par\n';
-  body += 'Date: ' + escRTF(date) + '\\par\n';
-  body += '\\par\\par\\par\n';
-  body += 'Amount Paid: N' + od.amount.toLocaleString() + '\\par\n';
+  // COVER PAGE — title only, centered, 14pt
+  body += '{\\pard\\qc\\sl480\\slmult1\\par\\par\\par\\par\\par\\par\n';
+  body += '\\b\\fs28 ' + escRTF(topic.toUpperCase()) + '\\b0\\fs24\\par\n';
   body += '\\page}\n';
 
   // Determine chapters to write
@@ -1031,48 +1015,92 @@ function generateDocument(od) {
   }
 
   var refs = buildRefs(refStyle, dept, topic);
+  var yr = new Date().getFullYear();
 
-  // Inline citation helper based on style
+  // Inline citation helper — must be declared before padParas uses it
   function cite(author, year, page) {
     var p = page ? ', p. ' + page : '';
     if (refStyle === 'APA 7th Edition' || refStyle.indexOf('APA') > -1) return '(' + author + ', ' + year + p + ')';
-    if (refStyle === 'Harvard') return '(' + author + ' ' + year + (page?', p.'+page:'') + ')';
-    if (refStyle === 'MLA') return '(' + author + (page?' '+page:'') + ')';
-    if (refStyle === 'Vancouver') return '[1]'; // simplified
+    if (refStyle === 'Harvard') return '(' + author + ' ' + year + (page ? ', p.' + page : '') + ')';
+    if (refStyle === 'MLA') return '(' + author + (page ? ' ' + page : '') + ')';
+    if (refStyle === 'Vancouver') return '[1]';
     return '(' + author + ', ' + year + ')';
   }
 
-  var yr = new Date().getFullYear();
+  // ── PRECISE PAGE TARGETING ──
+  // At 12pt Times New Roman, double spacing: ~270 words per A4 page
+  // Each rtfPara call = ~60-80 words on average
+  // So paras needed = (target_pages * 270) / 70 ≈ target_pages * 3.85
 
-  // Page multiplier based on level — controls how many extra paragraphs are added
-  var pgMult = 1;
-  if (level === 'OND' || level === 'HND' || level === 'NCE') pgMult = 1.2;
-  else if (level === 'BSc' || level === 'BEd' || level === 'BA' || level === 'BTech' || level === 'BEng' || level === 'NURSING') pgMult = 1.6;
-  else if (level === 'PGD' || level === 'MSc' || level === 'MBA' || level === 'MBBS' || level === 'LLB') pgMult = 2.6;
-  else if (level === 'PhD') pgMult = 4.2;
+  var WORDS_PER_PAGE = 270;
+  var WORDS_PER_PARA = 70;
 
-  // Helper: repeat a filler paragraph n times to pad content to required pages
-  function padParas(baseText, n) {
+  // Chapter page targets by level
+  var isUndergrad = ['OND','HND','NCE','BSc','BEd','BA','BTech','BEng','NURSING'].indexOf(level) > -1;
+  var isPostgrad  = ['PGD','MSc','MBA','MBBS','LLB'].indexOf(level) > -1;
+  var isPhD       = level === 'PhD';
+
+  // Pages per chapter [ch1, ch2, ch3, ch4, ch5]
+  var chPageTargets;
+  if (isPhD) {
+    chPageTargets = {ch1:35, ch2:90, ch3:22, ch4:60, ch5:22};
+  } else if (isPostgrad) {
+    chPageTargets = {ch1:17, ch2:45, ch3:12, ch4:30, ch5:12};
+  } else {
+    // undergrad + diploma
+    chPageTargets = {ch1:12, ch2:35, ch3:7,  ch4:17, ch5:4};
+  }
+
+  // Seminar/Proposal/Journal Writing page targets
+  var flatDocPages;
+  if (isPhD) flatDocPages = 50;
+  else if (isPostgrad) flatDocPages = 35;
+  else flatDocPages = 25;
+
+  // How many padding paragraphs needed for a chapter given its target pages
+  // minus the structural paragraphs already written (approx 8-10 per chapter)
+  function parasNeeded(chKey, alreadyWritten) {
+    var target = chPageTargets[chKey] || 10;
+    var totalParas = Math.ceil((target * WORDS_PER_PAGE) / WORDS_PER_PARA);
+    var needed = Math.max(0, totalParas - (alreadyWritten || 8));
+    return needed;
+  }
+
+  function flatParasNeeded(alreadyWritten) {
+    var totalParas = Math.ceil((flatDocPages * WORDS_PER_PAGE) / WORDS_PER_PARA);
+    return Math.max(0, totalParas - (alreadyWritten || 10));
+  }
+
+  // Large pool of filler paragraphs — all properly cited and academically worded
+  function padParas(chKey, n, section) {
     var c = '';
-    var extenders = [
-      'This assertion is further supported by a growing body of empirical evidence that underscores the multifaceted nature of ' + topic.toLowerCase() + ' and its far-reaching implications for policy, practice and scholarship in ' + dept + ' within the Nigerian context ' + cite('Adeyemi', yr-2) + '. The need for a deeper and more contextually grounded examination of this subject has therefore never been more pressing.',
-      'Scholars across various disciplines have consistently highlighted the importance of situating research on ' + topic.toLowerCase() + ' within broader theoretical and empirical frameworks that account for the unique socioeconomic, cultural and institutional realities of the Nigerian environment ' + cite('Adesanya & Olatunji', yr-1) + '. Such contextualisation is essential for ensuring that findings are both academically rigorous and practically applicable.',
-      'The significance of this area of inquiry extends beyond the academic sphere. Practitioners, policymakers and institutional leaders in ' + dept + ' have increasingly recognised the imperative of grounding their decisions in credible, evidence-based research that reflects the complexities of the Nigerian context ' + cite('Chukwuemeka', yr) + '. This study is therefore timely and relevant to multiple stakeholder groups.',
-      'An examination of the historical trajectory of ' + topic.toLowerCase() + ' reveals a gradual but discernible evolution in both conceptualisation and practice. Early scholarly treatments of the subject were largely descriptive and prescriptive in orientation, offering broad generalisations that often failed to capture the nuances and specificities of local contexts ' + cite('Nwosu et al.', yr-3) + '. Contemporary scholarship, by contrast, has adopted more critical and interpretive approaches that foreground context, power and agency.',
-      'The implications of ' + topic.toLowerCase() + ' for institutional development and policy reform in Nigeria are considerable. As various national and international bodies have noted, sustainable progress in ' + dept + ' requires not only the formulation of sound policies but also their effective implementation within institutional environments characterised by adequate capacity, accountability and stakeholder buy-in ' + cite('Okafor', yr-1) + '. This study contributes to this broader agenda by providing empirical evidence that can inform such efforts.',
-      'It is also worth noting that the study of ' + topic.toLowerCase() + ' intersects with a number of other important areas of academic inquiry, including organisational behaviour, public policy analysis, development studies and institutional economics. This interdisciplinary character enriches the conceptual and analytical resources available to researchers and underscores the importance of drawing on insights from multiple fields when examining complex social phenomena ' + cite('Yusuf & Ibrahim', yr-1) + '.',
-      'The Nigerian state, as a developing country with a complex political economy, presents a particularly instructive case for the study of ' + topic.toLowerCase() + '. The country\'s diverse ethnic, cultural and linguistic landscape, combined with its federal structure and history of policy inconsistency, creates a distinctive environment in which the dynamics of ' + dept + ' play out in ways that are both unique and generalisable to other developing country contexts ' + cite('World Bank', yr) + '.',
-      'Furthermore, the role of key institutional actors -- including government agencies, professional associations, civil society organisations and international development partners -- in shaping the trajectory of ' + topic.toLowerCase() + ' cannot be overstated. These actors bring to bear different interests, capacities and perspectives that collectively influence the outcomes of policies and programmes in this domain ' + cite('Adeyemi', yr-2) + '.',
-      'Empirical research on ' + topic.toLowerCase() + ' in Nigeria has, to date, been relatively sparse and uneven in terms of geographic coverage, methodological rigour and thematic scope. Most available studies are concentrated in the urban South-West and South-East regions of the country, with comparatively little attention paid to the North and other less-studied areas ' + cite('Nwosu et al.', yr-3) + '. This geographical imbalance represents a significant gap that this study, in part, seeks to address.',
-      'The broader development discourse in Nigeria has increasingly emphasised the need for evidence-based approaches to governance and institutional management. Within this context, research on ' + topic.toLowerCase() + ' assumes particular strategic importance as a source of insights that can guide reform efforts, inform resource allocation decisions and contribute to the achievement of national development goals ' + cite('Okafor', yr-1) + '.'
+    var pool = [
+      'This assertion is further supported by a growing body of empirical evidence that underscores the multifaceted nature of ' + topic.toLowerCase() + ' and its far-reaching implications for policy, practice and scholarship in ' + dept + ' within the context of higher education in Nigeria ' + cite('Adeyemi', yr-2) + '. The need for a deeper and more contextually grounded examination of this subject has therefore never been more pressing, particularly given the rapidly changing socioeconomic environment in which academic institutions now operate.',
+      'Scholars across various disciplines have consistently highlighted the importance of situating research on ' + topic.toLowerCase() + ' within broader theoretical and empirical frameworks that account for the unique socioeconomic, cultural and institutional realities of the environment under study ' + cite('Adesanya & Olatunji', yr-1) + '. Such contextualisation is essential for ensuring that findings are both academically rigorous and practically applicable to real-world challenges faced by students, practitioners and institutions alike.',
+      'The significance of this area of inquiry extends well beyond the academic sphere. Practitioners, policymakers and institutional leaders in ' + dept + ' have increasingly recognised the imperative of grounding their decisions in credible, evidence-based research that reflects the full complexity of the operating environment ' + cite('Chukwuemeka', yr) + '. Research of this nature therefore serves a dual purpose: advancing academic knowledge on one hand and informing practical decision-making on the other.',
+      'An examination of the historical trajectory of ' + topic.toLowerCase() + ' reveals a gradual but discernible evolution in both conceptualisation and practice. Early scholarly treatments of the subject were largely descriptive and prescriptive in orientation, offering broad generalisations that often failed to capture the nuances and specificities of local contexts ' + cite('Nwosu et al.', yr-3) + '. Contemporary scholarship, by contrast, has adopted more critical and interpretive approaches that foreground context, power, agency and structural determinants of outcomes.',
+      'The implications of ' + topic.toLowerCase() + ' for institutional development and policy reform are considerable. Sustainable progress in ' + dept + ' requires not only the formulation of sound policies but also their effective implementation within institutional environments characterised by adequate capacity, accountability and genuine stakeholder buy-in ' + cite('Okafor', yr-1) + '. This study contributes to this broader agenda by providing empirical evidence that can meaningfully inform such reform efforts at the institutional and national levels.',
+      'It is also worth noting that the study of ' + topic.toLowerCase() + ' intersects with a number of other important areas of academic inquiry, including organisational behaviour, public policy analysis, development studies and institutional economics ' + cite('Yusuf & Ibrahim', yr-1) + '. This interdisciplinary character enriches the conceptual and analytical resources available to researchers and underscores the importance of drawing on insights from multiple fields when examining complex social and academic phenomena.',
+      'The broader development discourse has increasingly emphasised the need for evidence-based approaches to governance and institutional management ' + cite('World Bank', yr) + '. Within this context, research on ' + topic.toLowerCase() + ' assumes particular strategic importance as a source of insights that can guide reform efforts, inform resource allocation decisions and contribute to the achievement of long-term institutional development goals.',
+      'Furthermore, the role of key institutional actors — including government agencies, regulatory bodies, professional associations, civil society organisations and development partners — in shaping the trajectory of ' + topic.toLowerCase() + ' cannot be overstated ' + cite('Adeyemi', yr-2) + '. These actors bring to bear different interests, capacities and perspectives that collectively influence the outcomes of policies and programmes in this domain, often in ways that are not immediately apparent from a surface-level analysis.',
+      'Empirical research on ' + topic.toLowerCase() + ' has, to date, been relatively sparse and uneven in terms of geographic coverage, methodological rigour and thematic scope ' + cite('Nwosu et al.', yr-3) + '. Most available studies have relied predominantly on quantitative methods, leaving important qualitative dimensions of the phenomenon underexplored. This study seeks to contribute to addressing these methodological and thematic gaps through a more comprehensive and contextually sensitive research approach.',
+      'The conceptual boundaries of ' + topic.toLowerCase() + ' have been a subject of considerable scholarly debate. While some researchers have advocated for a narrow, operational definition that lends itself to precise measurement and comparison, others have argued for a broader conceptualisation that better captures the full range of factors and dynamics at play ' + cite('Okafor', yr-1) + '. This study adopts a middle-ground position, drawing on both narrow and broad conceptualisations as appropriate to the specific research questions being addressed.',
+      'A critical review of the methodological approaches employed in previous studies on ' + topic.toLowerCase() + ' reveals both strengths and limitations that have important implications for the design of the current study ' + cite('Adesanya & Olatunji', yr-1) + '. Quantitative studies have provided valuable data on the prevalence and distribution of key variables, while qualitative investigations have offered rich insights into the meanings, processes and mechanisms that underlie observed patterns and relationships.',
+      'The theoretical debates surrounding ' + topic.toLowerCase() + ' have evolved significantly over the past two decades, reflecting broader shifts in academic discourse and the emergence of new analytical frameworks ' + cite('Chukwuemeka', yr) + '. These debates have not only enriched the conceptual vocabulary available to researchers but have also highlighted important unresolved tensions and contradictions in how the subject is theorised and empirically investigated.',
+      'It is important to situate the present study within the broader intellectual tradition from which it emerges, acknowledging the contributions of previous scholars while also identifying the ways in which this research seeks to extend, refine or challenge existing knowledge ' + cite('Yusuf & Ibrahim', yr-1) + '. Such intellectual humility and critical self-awareness are essential hallmarks of rigorous academic inquiry and are reflected throughout the design and execution of this study.',
+      'The practical relevance of this research is underscored by the pressing challenges facing institutions and practitioners in ' + dept + ' today ' + cite('World Bank', yr) + '. These challenges — which range from resource constraints and capacity gaps to governance deficits and rapidly shifting environmental demands — create an urgent need for robust, evidence-based insights that can guide effective responses and sustainable solutions.',
+      'A review of the institutional landscape within which ' + topic.toLowerCase() + ' is embedded reveals a complex web of formal and informal structures, rules, norms and relationships that shape how actors behave and how outcomes are produced ' + cite('Adeyemi', yr-2) + '. Understanding this institutional context is therefore essential for interpreting the findings of this study and for identifying the conditions under which the recommendations offered are most likely to be effective and sustainable.',
+      'The measurement of key variables in studies of ' + topic.toLowerCase() + ' presents a number of methodological challenges that researchers must address carefully ' + cite('Nwosu et al.', yr-3) + '. Issues of construct validity, measurement error and response bias are particularly salient in survey-based research, and this study employs a range of strategies to mitigate these challenges and ensure that the data collected are as accurate and reliable as possible.',
+      'Comparative analysis across different institutional settings and national contexts can yield valuable insights into the factors that account for variation in outcomes related to ' + topic.toLowerCase() + ' ' + cite('Okafor', yr-1) + '. While the primary focus of this study is on the local context, reference is made throughout to comparative evidence from other settings as a means of contextualising the findings and identifying potential lessons for policy and practice.',
+      'The gendered dimensions of ' + topic.toLowerCase() + ' represent an important but often underexplored aspect of the research landscape in this area ' + cite('Adesanya & Olatunji', yr-1) + '. Differential outcomes by gender have been documented in several studies, though the mechanisms that produce these differences remain poorly understood. This study is attentive to gender as a potential moderating variable and seeks to provide disaggregated analysis where the data permit.',
+      'The role of technology and digital innovation in reshaping the landscape of ' + topic.toLowerCase() + ' has emerged as a prominent theme in recent scholarly literature ' + cite('Chukwuemeka', yr) + '. The rapid proliferation of digital tools and platforms has created new opportunities for more efficient and effective practices, while also introducing new risks and challenges that require careful navigation by practitioners, policymakers and institutional leaders.',
+      'A thorough understanding of ' + topic.toLowerCase() + ' requires attention not only to the structural and institutional dimensions of the phenomenon but also to the agency of individual actors and the ways in which they navigate, negotiate and sometimes resist the constraints imposed by their operating environments ' + cite('Yusuf & Ibrahim', yr-1) + '. This dual focus on structure and agency is a defining feature of the analytical approach adopted in this study and is reflected in both the theoretical framework and the methodological design.'
     ];
     for (var xi = 0; xi < n; xi++) {
-      c += rtfPara(extenders[xi % extenders.length], {});
+      c += rtfPara(pool[xi % pool.length], {});
     }
     return c;
   }
-
-  var extraParas = Math.ceil(pgMult * 3);
 
   // CHAPTER CONTENT
   var chapterContent = {};
@@ -1087,7 +1115,7 @@ function generateDocument(od) {
     c += rtfPara('Previous studies have approached this subject from varied theoretical and methodological standpoints. However, there remain significant gaps in the literature, particularly as they relate to the Nigerian context and the specific circumstances of ' + dept + ' practitioners and students ' + cite('Nwosu et al.', yr-3) + '. This study seeks to fill those gaps by providing a focused, empirically grounded analysis that contributes meaningfully to the existing body of knowledge.', {});
     c += rtfPara('Nigeria occupies a unique position in the African development landscape. As the continent\'s most populous nation and largest economy, developments within its key institutional sectors carry implications not only domestically but also for the wider West African sub-region. The study of ' + topic.toLowerCase() + ' is therefore of both national and regional significance, warranting rigorous academic attention ' + cite('World Bank', yr) + '.', {});
     c += rtfPara('The increasing complexity of the policy environment in which ' + dept + ' operates in Nigeria has further underscored the need for systematic research in this area. Rapid technological change, shifting demographic patterns, evolving governance structures and changing international development priorities have all combined to reshape the landscape within which ' + topic.toLowerCase() + ' is situated ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
-    c += padParas('', Math.ceil(extraParas * 0.6));
+    c += padParas('ch1', parasNeeded('ch1', 18));
     c += rtfPara('1.2 Statement of the Problem', {bold:true, size:12});
     c += rtfPara('Despite the growing recognition of the importance of ' + topic.toLowerCase() + ' within academic and professional circles in Nigeria, there exists a conspicuous dearth of comprehensive, contextually relevant studies on the subject. Many existing studies are either too broad in scope, methodologically limited or focused on contexts that differ significantly from the Nigerian reality ' + cite('Okafor', yr-1) + '.', {});
     c += rtfPara('Furthermore, stakeholders in ' + dept + ' continue to grapple with challenges that remain inadequately addressed in the extant literature. These include the absence of evidence-based frameworks, limited institutional capacity and inadequate policy responses. This study therefore seeks to critically examine ' + topic.toLowerCase() + ' with a view to identifying key challenges, assessing relevant factors and proffering actionable recommendations for all stakeholders concerned.', {});
@@ -1129,7 +1157,7 @@ function generateDocument(od) {
     c += rtfPara(dept + ': Refers to the academic, professional and institutional domain within which this study is situated, including all relevant organisations, practitioners, regulators and stakeholders operating within this field.', {});
     c += rtfPara(level + ': Refers to the academic qualification level at which this research is submitted, as recognised by the relevant regulatory bodies in Nigeria, including the National Universities Commission (NUC) and the National Board for Technical Education (NBTE).', {});
     c += rtfPara('Stakeholders: Refers collectively to all individuals, groups and institutions whose interests are directly or indirectly affected by the outcomes of ' + topic.toLowerCase() + ', including students, practitioners, administrators, policymakers and the general public.', {});
-    c += padParas('', Math.ceil(extraParas * 0.4));
+    c += padParas('ch1', parasNeeded('ch1', 22));
     return c;
   };
 
@@ -1153,6 +1181,7 @@ function generateDocument(od) {
     c += rtfPara('Despite the rich body of literature reviewed above, several notable gaps remain. Most existing studies focus on urban settings, neglecting the rural dimensions of the phenomenon. Additionally, longitudinal studies that track outcomes over time are conspicuously absent in the Nigerian context. There is also a methodological gap, with most studies relying on quantitative approaches at the expense of more interpretive and participatory methods. This study seeks to address some of these gaps by adopting a mixed-methods approach and focusing specifically on the Nigerian reality.', {});
     c += rtfPara('2.6 Summary', {bold:true, size:12});
     c += rtfPara('This chapter has reviewed the conceptual, theoretical and empirical literature relevant to ' + topic + '. The review has established the theoretical anchoring of the study, highlighted key empirical findings and identified gaps that justify the present investigation. The next chapter outlines the research methodology adopted to address these gaps.', {});
+    c += padParas('ch2', parasNeeded('ch2', 12));
     return c;
   };
 
@@ -1179,6 +1208,7 @@ function generateDocument(od) {
     c += rtfPara('The questionnaires were administered personally by the researcher, with the assistance of trained research assistants. A period of four weeks was allowed for data collection. Completed questionnaires were retrieved immediately after completion to ensure a high response rate and minimise data loss.', {});
     c += rtfPara('3.9 Method of Data Analysis', {bold:true, size:12});
     c += rtfPara('Data collected was analysed using both descriptive and inferential statistical methods. Descriptive statistics, including frequency counts, percentages, means and standard deviations, were used to summarise the demographic and variable data. Inferential statistics, specifically Pearson Product Moment Correlation and regression analysis, were employed to test the research hypotheses. All analyses were conducted using the Statistical Package for the Social Sciences (SPSS) version 25.0, at a significance level of p < 0.05.', {});
+    c += padParas('ch3', parasNeeded('ch3', 10));
     return c;
   };
 
@@ -1203,7 +1233,8 @@ function generateDocument(od) {
     c += rtfPara('Using Pearson Product Moment Correlation, a correlation coefficient of r = 0.72 (p < 0.05) was obtained. Since the p-value (0.000) is less than the significance level (0.05), the null hypothesis is rejected. This confirms that there is a significant positive relationship between the key variables identified in this study ' + cite('Okafor', yr-1) + '.', {});
     c += rtfPara('4.6 Discussion of Findings', {bold:true, size:12});
     c += rtfPara('The findings of this study corroborate much of the extant literature on ' + topic.toLowerCase() + '. The identification of institutional capacity, policy environment and stakeholder engagement as critical success factors resonates with the frameworks proposed by ' + cite('Chukwuemeka', yr) + ' and the empirical evidence of ' + cite('Adesanya & Olatunji', yr-1) + '. The significant positive correlation found between the key variables lends further credence to the theoretical frameworks adopted in this study.', {});
-    c += rtfPara('However, the findings also reveal some context-specific dimensions that are not adequately captured in the existing literature. In particular, the role of socio-cultural factors in mediating outcomes -- while acknowledged by ' + cite('World Bank', yr) + ' at the macro level -- appears to have a more pronounced effect in the Nigerian setting than previously documented. This finding underscores the importance of context-sensitive research and policy design.', {});
+    c += rtfPara('However, the findings also reveal some context-specific dimensions that are not adequately captured in the existing literature. In particular, the role of socio-cultural factors in mediating outcomes — while acknowledged by ' + cite('World Bank', yr) + ' at the macro level — appears to have a more pronounced effect in the Nigerian setting than previously documented. This finding underscores the importance of context-sensitive research and policy design.', {});
+    c += padParas('ch4', parasNeeded('ch4', 14));
     return c;
   };
 
@@ -1235,6 +1266,7 @@ function generateDocument(od) {
     c += rtfPara('This study makes several contributions to the body of knowledge on ' + topic.toLowerCase() + '. It provides new empirical evidence on the nature and scope of the phenomenon in Nigeria, validates the applicability of Systems Theory and Institutional Theory in this context and identifies context-specific factors not previously documented in the literature. The findings serve as a reference for future researchers, policymakers and practitioners in ' + dept + ' and related fields.', {});
     c += rtfPara('5.7 Suggestions for Further Studies', {bold:true, size:12});
     c += rtfPara('Future researchers are encouraged to conduct longitudinal studies to track changes in the key variables over time. Studies adopting qualitative and participatory methods would also complement the quantitative approach of this study. Additionally, comparative studies across different geopolitical zones in Nigeria would provide a more comprehensive understanding of the regional dimensions of ' + topic.toLowerCase() + '.', {});
+    c += padParas('ch5', parasNeeded('ch5', 12));
     return c;
   };
 
@@ -1318,38 +1350,42 @@ function generateDocument(od) {
   if (svc === 'seminar') {
     body += rtfPara('SEMINAR PAPER', {bold:true, center:true, size:14});
     body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
-    body += rtfPara('Department of ' + dept + '   |   Level: ' + level + '   |   Referencing: ' + refStyle, {center:true});
     body += rtfPara('1. Introduction', {bold:true, size:12});
-    body += rtfPara('This seminar paper examines ' + topic.toLowerCase() + ' with a view to understanding its theoretical foundations, empirical dimensions and practical implications for ' + dept + '. The paper draws from a range of academic sources and is structured to provide a comprehensive overview of the subject matter.', {});
+    body += rtfPara('This seminar paper examines ' + topic.toLowerCase() + ' with a view to understanding its theoretical foundations, empirical dimensions and practical implications for ' + dept + '. The paper draws from a range of academic sources and is structured to provide a comprehensive overview of the subject matter ' + cite('Adeyemi', yr-2) + '. The increasing relevance of this subject within contemporary academic and professional discourse makes a thorough examination of its key dimensions both timely and necessary.', {});
     body += rtfPara('2. Conceptual Clarification', {bold:true, size:12});
     body += rtfPara('The concept of ' + topic.toLowerCase() + ' has been defined variously in the literature. ' + cite('Adeyemi', yr-2) + ' describes it as a multidimensional phenomenon encompassing structural, functional and normative dimensions. A synthesis of these definitions reveals that at its core, the concept involves the systematic examination of ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + ' and its implications for theory and practice.', {});
+    body += rtfPara('A more granular analysis of the concept reveals that different scholarly traditions have emphasised different aspects of the phenomenon ' + cite('Adesanya & Olatunji', yr-1) + '. Positivist researchers have tended to focus on measurable outcomes and quantifiable variables, while interpretivist scholars have privileged the subjective experiences and contextual meanings through which actors make sense of the phenomenon. This study acknowledges both traditions and seeks to synthesise their respective contributions.', {});
     body += rtfPara('3. Theoretical Underpinnings', {bold:true, size:12});
-    body += rtfPara('This paper draws on Systems Theory ' + cite('Chukwuemeka', yr) + ' and Institutional Theory ' + cite('Nwosu et al.', yr-3) + ' as its theoretical framework. These theories provide complementary lenses through which the key issues of the paper can be examined.', {});
+    body += rtfPara('This paper draws on Systems Theory ' + cite('Chukwuemeka', yr) + ' and Institutional Theory ' + cite('Nwosu et al.', yr-3) + ' as its theoretical framework. These theories provide complementary lenses through which the key issues of the paper can be examined. Systems Theory enables a holistic view of the phenomenon, drawing attention to the interactions between its constituent components. Institutional Theory, on the other hand, focuses attention on the formal and informal rules, norms and conventions that shape behaviour and outcomes in this domain.', {});
     body += rtfPara('4. Critical Analysis', {bold:true, size:12});
-    body += rtfPara('A critical analysis of the available evidence reveals several important patterns. ' + cite('Adesanya & Olatunji', yr-1) + ' found that contextual factors significantly mediate the relationship between theoretical prescriptions and on-the-ground realities. This finding has profound implications for how practitioners and policymakers approach ' + topic.toLowerCase() + '.', {});
+    body += rtfPara('A critical analysis of the available evidence reveals several important patterns. ' + cite('Adesanya & Olatunji', yr-1) + ' found that contextual factors significantly mediate the relationship between theoretical prescriptions and on-the-ground realities. This finding has profound implications for how practitioners and policymakers approach ' + topic.toLowerCase() + '. Furthermore, ' + cite('Okafor', yr-1) + ' demonstrated that the effectiveness of interventions in this area depends critically on the quality of institutional arrangements and the degree of stakeholder alignment.', {});
+    body += rtfPara('The empirical evidence on ' + topic.toLowerCase() + ' points to a number of recurring challenges that must be addressed if progress is to be sustained ' + cite('World Bank', yr) + '. These include inadequate resource allocation, weak implementation capacity, poor coordination among relevant actors and the absence of robust monitoring and evaluation systems. Addressing these challenges requires a combination of policy reform, institutional strengthening and capacity development at multiple levels.', {});
     body += rtfPara('5. Conclusion and Recommendations', {bold:true, size:12});
     body += rtfPara('In conclusion, this seminar paper has examined ' + topic.toLowerCase() + ' from multiple angles. The evidence reviewed points to the need for integrated, context-sensitive approaches that account for the complex interplay of factors involved. It is recommended that practitioners, researchers and policymakers collaborate to develop evidence-based solutions that are both theoretically grounded and practically relevant.', {});
+    body += padParas('ch2', flatParasNeeded(10));
   }
 
   // Proposal
   if (svc === 'proposal') {
     body += rtfPara('RESEARCH PROPOSAL', {bold:true, center:true, size:14});
     body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
-    body += rtfPara('Department of ' + dept + '   |   Level: ' + level + '   |   Referencing: ' + refStyle, {center:true});
     body += rtfPara('1.0 Introduction and Background', {bold:true, size:12});
-    body += rtfPara('This proposal outlines a plan to investigate ' + topic.toLowerCase() + '. The proposed study is motivated by the identified gaps in the existing literature and the practical need for evidence-based insights in ' + dept + ' in Nigeria.', {});
+    body += rtfPara('This proposal outlines a plan to investigate ' + topic.toLowerCase() + '. The proposed study is motivated by the identified gaps in the existing literature and the practical need for evidence-based insights in ' + dept + '. The background of the study underscores the growing importance of ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + ' as a subject of academic and policy concern ' + cite('Adeyemi', yr-2) + '.', {});
+    body += rtfPara('The existing body of knowledge on this subject, while substantial in some respects, has significant limitations in terms of geographical coverage, methodological diversity and theoretical sophistication ' + cite('Adesanya & Olatunji', yr-1) + '. The proposed study seeks to address these limitations by adopting a rigorous, multi-method research design tailored to the specific context and objectives of the investigation.', {});
     body += rtfPara('2.0 Statement of the Problem', {bold:true, size:12});
-    body += rtfPara('Despite growing interest in ' + topic.toLowerCase() + ', there remains a dearth of comprehensive, contextually relevant studies on the subject in Nigeria ' + cite('Okafor', yr-1) + '. This study aims to address these gaps.', {});
+    body += rtfPara('Despite growing interest in ' + topic.toLowerCase() + ', there remains a dearth of comprehensive, contextually relevant studies on the subject ' + cite('Okafor', yr-1) + '. Existing research has tended to focus on macro-level dynamics, leaving micro-level processes and mechanisms underexplored. This study aims to address these gaps by providing a focused, evidence-based investigation that illuminates both the structural and agential dimensions of the phenomenon.', {});
+    body += rtfPara('The problem is further compounded by the absence of reliable, up-to-date data on key dimensions of ' + topic.toLowerCase() + ' in the study context ' + cite('Chukwuemeka', yr) + '. This data gap undermines the capacity of stakeholders to make informed decisions and design effective interventions. The proposed study will contribute to filling this gap through systematic primary data collection and analysis.', {});
     body += rtfPara('3.0 Objectives of the Study', {bold:true, size:12});
-    body += rtfPara('The broad objective is to examine ' + topic.toLowerCase() + '. Specific objectives include assessing key factors, examining relationships between variables and proffering recommendations.', {});
+    body += rtfPara('The broad objective is to examine ' + topic.toLowerCase() + '. Specific objectives include: (i) investigating the nature and scope of the phenomenon; (ii) assessing key influencing factors; (iii) examining relationships between variables; (iv) identifying challenges and prospects; and (v) proffering evidence-based recommendations for stakeholders.', {});
     body += rtfPara('4.0 Research Questions and Hypotheses', {bold:true, size:12});
-    body += rtfPara('The study will be guided by five research questions and two null hypotheses as outlined in the full proposal document.', {});
+    body += rtfPara('The study will be guided by five research questions corresponding to its specific objectives. Two null hypotheses will also be tested: HO1 — there is no significant relationship between the key variables; HO2 — ' + topic.split(' ').slice(0,3).join(' ') + ' does not significantly affect outcomes in ' + dept + '.', {});
     body += rtfPara('5.0 Significance of the Study', {bold:true, size:12});
-    body += rtfPara('This study will contribute to academic knowledge, inform policy and serve as a reference for practitioners in ' + dept + '.', {});
+    body += rtfPara('This study will contribute to academic knowledge on ' + topic.toLowerCase() + ', inform policy design and implementation and serve as a reference for practitioners and students in ' + dept + '. The findings will also have methodological value, demonstrating how mixed-methods approaches can be applied effectively in this research domain ' + cite('Nwosu et al.', yr-3) + '.', {});
     body += rtfPara('6.0 Methodology', {bold:true, size:12});
-    body += rtfPara('A descriptive survey design will be adopted. Data will be collected via structured questionnaire from a sample selected through stratified random sampling. Cronbach Alpha will be used for reliability testing and SPSS for data analysis.', {});
+    body += rtfPara('A descriptive survey design will be adopted. Primary data will be collected via structured questionnaire from a sample selected through stratified random sampling using the Taro Yamane (1967) formula. Cronbach Alpha will be used for reliability testing (threshold: 0.70) and SPSS version 25.0 will be used for data analysis, employing both descriptive and inferential statistical methods ' + cite('Okafor', yr-1) + '.', {});
     body += rtfPara('7.0 Scope and Limitations', {bold:true, size:12});
-    body += rtfPara('The study covers ' + topic.toLowerCase() + ' in Nigeria. Limitations include time, funding and data access constraints.', {});
+    body += rtfPara('The study covers ' + topic.toLowerCase() + ' within the relevant institutional and geographic context. Anticipated limitations include time and financial constraints, potential response bias and restricted access to certain secondary data sources. These will be mitigated through careful instrument design, multiple data collection strategies and triangulation of findings ' + cite('Adeyemi', yr-2) + '.', {});
+    body += padParas('ch2', flatParasNeeded(12));
   }
 
   // Journal Writing
@@ -1357,17 +1393,20 @@ function generateDocument(od) {
     body += rtfPara('JOURNAL ARTICLE', {bold:true, center:true, size:14});
     body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
     body += rtfPara('Abstract', {bold:true, size:12});
-    body += rtfPara('This article examines ' + topic.toLowerCase() + ' with a focus on the Nigerian context. Drawing on a systematic review of the literature and empirical evidence, the article argues that ' + topic.split(' ').slice(0,6).join(' ').toLowerCase() + ' is a multifaceted phenomenon shaped by institutional, socioeconomic and policy factors. The article concludes with policy and practice recommendations. Keywords: ' + topic.split(' ').slice(0,5).join(', ') + ', Nigeria, ' + dept + '.', {});
+    body += rtfPara('This article examines ' + topic.toLowerCase() + ' with a focus on the Nigerian context. Drawing on a systematic review of the literature and empirical evidence, the article argues that ' + topic.split(' ').slice(0,6).join(' ').toLowerCase() + ' is a multifaceted phenomenon shaped by institutional, socioeconomic and policy factors. The article concludes with policy and practice recommendations for stakeholders in ' + dept + '. Keywords: ' + topic.split(' ').slice(0,5).join(', ') + ', Nigeria, ' + dept + '.', {});
     body += rtfPara('1. Introduction', {bold:true, size:12});
-    body += rtfPara('The study of ' + topic.toLowerCase() + ' has assumed increasing prominence in academic discourse ' + cite('Adeyemi', yr-2) + '. This article contributes to this growing body of knowledge by providing a focused analysis of the phenomenon in the Nigerian setting.', {});
+    body += rtfPara('The study of ' + topic.toLowerCase() + ' has assumed increasing prominence in academic discourse ' + cite('Adeyemi', yr-2) + '. This article contributes to this growing body of knowledge by providing a focused, evidence-based analysis of the phenomenon. The article is structured as follows: Section 2 reviews the relevant literature; Section 3 describes the methodology; Section 4 presents and discusses the findings; and Section 5 concludes with recommendations.', {});
+    body += rtfPara('The motivation for this study stems from a recognition that existing research on ' + topic.toLowerCase() + ', while valuable, has several notable limitations ' + cite('Adesanya & Olatunji', yr-1) + '. Most available studies are cross-sectional in design, geographically concentrated and methodologically narrow. This article seeks to address these limitations through a more comprehensive and contextually grounded investigation.', {});
     body += rtfPara('2. Literature Review', {bold:true, size:12});
-    body += rtfPara(cite('Adesanya & Olatunji', yr-1) + ' demonstrated that contextual factors significantly shape outcomes. ' + cite('Nwosu et al.', yr-3) + ' further established the role of institutional frameworks in mediating these outcomes. Building on these contributions, this article advances a more nuanced understanding of ' + topic.toLowerCase() + '.', {});
+    body += rtfPara(cite('Adesanya & Olatunji', yr-1) + ' demonstrated that contextual factors significantly shape outcomes in this domain. ' + cite('Nwosu et al.', yr-3) + ' further established the role of institutional frameworks in mediating these outcomes. Building on these contributions, this article advances a more nuanced understanding of ' + topic.toLowerCase() + ' that accounts for both structural and agential dimensions of the phenomenon.', {});
+    body += rtfPara('The theoretical literature on this subject has been shaped by two dominant paradigms ' + cite('Chukwuemeka', yr) + '. The first, rooted in rational choice theory, emphasises the role of incentives, preferences and strategic behaviour in explaining outcomes. The second, drawing on institutionalism, foregrounds the importance of rules, norms and organisational structures in shaping behaviour. This article adopts an integrative perspective that draws on both paradigms.', {});
     body += rtfPara('3. Methodology', {bold:true, size:12});
-    body += rtfPara('A mixed-methods approach was adopted. Quantitative data were collected via survey (n=150) and analysed using SPSS. Qualitative insights were obtained through focus group discussions.', {});
+    body += rtfPara('A mixed-methods approach was adopted to provide a comprehensive analysis of the research problem. Quantitative data were collected via structured survey instrument (n=150) and analysed using SPSS version 25.0. Qualitative insights were obtained through semi-structured interviews and focus group discussions with purposively selected participants. Data triangulation was employed to enhance the validity and reliability of the findings ' + cite('Okafor', yr-1) + '.', {});
     body += rtfPara('4. Findings and Discussion', {bold:true, size:12});
-    body += rtfPara('Results indicate a significant positive relationship between the key variables (r = 0.68, p < 0.05). These findings align with ' + cite('Okafor', yr-1) + ' and have important implications for policy and practice in ' + dept + '.', {});
+    body += rtfPara('Results indicate a significant positive relationship between the key variables (r = 0.68, p < 0.05). These findings align with ' + cite('Okafor', yr-1) + ' and have important implications for policy and practice in ' + dept + '. Qualitative data further revealed that stakeholder perceptions of the phenomenon are shaped by a complex interplay of institutional, cultural and experiential factors that quantitative methods alone cannot fully capture ' + cite('World Bank', yr) + '.', {});
     body += rtfPara('5. Conclusion', {bold:true, size:12});
-    body += rtfPara('This article has examined ' + topic.toLowerCase() + ' and established key empirical relationships. Future research should adopt longitudinal designs and explore regional variations across Nigeria.', {});
+    body += rtfPara('This article has examined ' + topic.toLowerCase() + ' and established key empirical relationships. The findings underscore the importance of context-sensitive, multi-method approaches to research in this domain. Future research should adopt longitudinal designs, expand geographic coverage and explore the gendered dimensions of the phenomenon ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+    body += padParas('ch2', flatParasNeeded(14));
   }
 
   // REFERENCES section
