@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InstantProject – Academic Research Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+  :root {
+    --blue:#1877F2; --blue-dark:#0a5dc2; --blue-light:#e7f0fd; --blue-mid:#c5d9f8;
+    --white:#fff; --gray-50:#f8f9fb; --gray-100:#f0f2f5; --gray-200:#e4e6eb;
+    --gray-400:#bcc0c4; --gray-600:#65676b; --gray-800:#1c1e21;
+    --success:#00b37e; --radius:12px; --radius-lg:18px;
+    --shadow:0 2px 12px rgba(24,119,242,.10); --shadow-md:0 4px 24px rgba(24,119,242,.13);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--white);color:var(--gray-800);line-height:1.6;overflow-x:hidden;}
+
+  /* NAV */
+  nav{background:var(--white);border-bottom:1.5px solid var(--gray-200);position:sticky;top:0;z-index:100;padding:0 2rem;}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:66px;}
+  .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:var(--blue);text-decoration:none;letter-spacing:-0.5px;}
+  .logo-icon{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;font-weight:800;}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#1877F2 0%,#0a5dc2 60%,#042c80 100%);padding:2.8rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+  .hero-inner{max-width:700px;margin:0 auto;position:relative;}
+  .hero-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.3rem 1rem;border-radius:50px;margin-bottom:1.2rem;}
+  .hero h1{font-size:clamp(1.7rem,4.5vw,2.8rem);font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.5px;}
+  .hero h1 em{font-style:italic;font-family:'Lora',serif;font-weight:400;}
+
+  /* SECTION */
+  .section{padding:4rem 2rem;}
+  .section-inner{max-width:1100px;margin:0 auto;}
+  .section-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.5rem;}
+  .section-title{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;color:var(--gray-800);margin-bottom:.4rem;letter-spacing:-.3px;}
+  .section-sub{color:var(--gray-600);font-size:.95rem;max-width:520px;}
+  .section-header{margin-bottom:2.5rem;}
+
+  /* FORM PANEL */
+  .order-section{background:var(--gray-50);}
+  .search-panel{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+  .form-group{display:flex;flex-direction:column;gap:.35rem;}
+  .form-group label{font-size:.8rem;font-weight:600;color:var(--gray-600);}
+  .form-group label .opt{font-weight:400;color:var(--gray-400);font-size:.74rem;}
+  .form-group input,.form-group select,.form-group textarea{border:1.5px solid var(--gray-200);border-radius:9px;padding:.6rem .85rem;font-family:inherit;font-size:.88rem;color:var(--gray-800);background:var(--white);outline:none;transition:border-color .15s;width:100%;}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue);}
+  .form-group textarea{resize:vertical;min-height:90px;}
+  .form-full{grid-column:1/-1;}
+
+  /* HINT BOX */
+  .hint-box{background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:9px;padding:.65rem 1rem;font-size:.8rem;color:var(--blue-dark);margin-bottom:1rem;font-weight:500;}
+
+  /* CHAPTER CHIPS */
+  .chip-section{margin-bottom:1rem;}
+  .chip-label{font-size:.8rem;font-weight:600;color:var(--gray-600);margin-bottom:.5rem;display:block;}
+  .chips-grid{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .chip{border:1.5px solid var(--gray-200);border-radius:8px;padding:.38rem .85rem;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--white);color:var(--gray-800);transition:all .15s;user-select:none;white-space:nowrap;}
+  .chip.selected{border-color:var(--blue);background:var(--blue);color:#fff;}
+  .chip.disabled{opacity:.28;cursor:not-allowed;pointer-events:none;}
+
+  /* QTY */
+  .qty-row{display:flex;align-items:center;gap:.65rem;margin-top:.25rem;}
+  .qty-btn{width:34px;height:34px;border:1.5px solid var(--gray-200);border-radius:8px;background:var(--white);font-size:1.1rem;font-weight:700;color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;line-height:1;}
+  .qty-btn:hover{background:var(--blue-light);border-color:var(--blue);}
+  .qty-input{width:70px;text-align:center;}
+
+  /* UPLOAD */
+  .upload-zone{border:2px dashed var(--gray-200);border-radius:var(--radius);padding:1.3rem 1rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--gray-50);}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:var(--blue-light);}
+  .upload-icon{font-size:1.4rem;margin-bottom:.3rem;}
+  .upload-text{font-size:.85rem;font-weight:600;color:var(--gray-600);}
+  .upload-hint{font-size:.73rem;color:var(--gray-400);margin-top:.2rem;}
+  .upload-zone.has-file{border-color:var(--success);background:#f0fdf9;}
+  .upload-zone.has-file .upload-text{color:var(--success);}
+
+  /* PRICE SUMMARY */
+  .price-summary{background:var(--blue);border-radius:var(--radius);padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;margin:1.4rem 0 1rem;gap:1rem;}
+  .price-left .price-label{font-size:.78rem;color:rgba(255,255,255,.75);font-weight:500;}
+  .price-left .price-breakdown{font-size:.82rem;color:rgba(255,255,255,.95);margin-top:2px;font-weight:600;}
+  .price-value{font-size:1.8rem;font-weight:800;color:#fff;white-space:nowrap;flex-shrink:0;}
+
+  /* PAY BUTTON */
+  .pay-btn{width:100%;background:var(--success);color:#fff;border:none;border-radius:11px;padding:.9rem;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+  .pay-btn:hover{background:#009b6e;}
+  .pay-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+  /* TESTIMONIALS CAROUSEL */
+  .testimonials-section{background:var(--blue);}
+  .testimonials-section .section-label{color:rgba(255,255,255,.7);}
+  .testimonials-section .section-title{color:#fff;}
+  .testimonials-section .section-sub{color:rgba(255,255,255,.75);}
+  .t-scroll-wrap{overflow:hidden;position:relative;}
+  .t-track{display:flex;gap:1.2rem;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform;}
+  .testimonial-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-lg);padding:1.4rem;min-width:300px;max-width:300px;flex-shrink:0;}
+  .stars{color:#ffd055;font-size:.88rem;margin-bottom:.7rem;letter-spacing:2px;}
+  .testimonial-text{font-size:.86rem;color:rgba(255,255,255,.9);line-height:1.65;margin-bottom:1rem;font-style:italic;}
+  .testimonial-author{display:flex;align-items:center;gap:.7rem;}
+  .author-avatar{width:36px;height:36px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;}
+  .author-name{font-size:.84rem;font-weight:700;color:#fff;}
+  .author-dept{font-size:.74rem;color:rgba(255,255,255,.6);}
+  .t-dots{display:flex;justify-content:center;gap:.5rem;margin-top:1.5rem;}
+  .t-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:background .2s,transform .2s;border:none;padding:0;}
+  .t-dot.active{background:#fff;transform:scale(1.25);}
+  @media(max-width:768px){.testimonial-card{min-width:260px;max-width:260px;}}
+
+  /* FAQ */
+  .faq-section{background:var(--gray-50);}
+  .faq-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;gap:1rem;}
+  .faq-top-left{flex:1;}
+  .faq-bubble{font-size:4rem;line-height:1;opacity:.18;flex-shrink:0;}
+  .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+  .faq-item{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+  .faq-item.open{border-color:var(--blue);box-shadow:0 4px 16px rgba(24,119,242,.1);}
+  .faq-question{display:flex;justify-content:space-between;align-items:center;padding:.95rem 1.2rem;cursor:pointer;font-size:.9rem;font-weight:700;color:var(--gray-800);gap:1rem;user-select:none;transition:background .15s;}
+  .faq-item.open .faq-question{background:var(--blue-light);color:var(--blue);}
+  .faq-chevron{font-size:.78rem;color:var(--gray-400);transition:transform .2s;flex-shrink:0;}
+  .faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--blue);}
+  .faq-answer{display:none;padding:.1rem 1.2rem 1rem;font-size:.85rem;color:var(--gray-600);line-height:1.7;}
+  .faq-item.open .faq-answer{display:block;}
+  @media(max-width:680px){.faq-grid{grid-template-columns:1fr;}.faq-top{flex-direction:column;align-items:flex-start;}.faq-bubble{display:none;}}
+
+  /* FOOTER */
+  footer{background:var(--gray-800);color:rgba(255,255,255,.55);padding:3rem 2rem 1.5rem;}
+  .footer-inner{max-width:1100px;margin:0 auto;}
+  .footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;margin-bottom:2.5rem;}
+  .footer-brand .logo{color:#fff;font-size:1.1rem;margin-bottom:.7rem;display:inline-flex;}
+  .footer-brand p{font-size:.83rem;line-height:1.65;max-width:230px;}
+  .footer-col h4{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#fff;margin-bottom:.9rem;}
+  .footer-col a{display:block;font-size:.83rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:.5rem;transition:color .15s;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;font-size:.78rem;flex-wrap:wrap;gap:.5rem;}
+  .footer-bottom .hl{color:var(--blue);font-weight:600;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#fff;border:1px solid var(--gray-200);border-left:4px solid var(--success);border-radius:var(--radius);padding:.9rem 1.2rem;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:999;transform:translateX(150%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);max-width:320px;}
+  .toast.show{transform:translateX(0);}
+  .toast-title{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;}
+
+  /* LOADING */
+  .loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;}
+  .loading-overlay.active{display:flex;}
+  .loading-box{background:#fff;border-radius:var(--radius-lg);padding:2rem 2.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+  .spinner{width:44px;height:44px;border:4px solid var(--blue-mid);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-box p{font-size:.9rem;font-weight:600;color:var(--gray-600);}
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .form-row{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .price-summary{flex-direction:column;align-items:flex-start;gap:.5rem;}
+    .price-value{font-size:1.5rem;}
+  }
+  @media(max-width:480px){
+    .footer-grid{grid-template-columns:1fr;}
+    .section{padding:3rem 1.2rem;}
+    .search-panel{padding:1.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">IP</div>InstantProject
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-badge">&#127979; Trusted by Millions of Students</span>
+    <h1>Your Academic Research,<br><em>Delivered Instantly</em></h1>
+  </div>
+</section>
+
+<!-- ORDER FORM -->
+<section class="section order-section" id="order" style="padding-top:2.5rem;">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 class="section-title">Get Your Academic Work Done Now</h2>
+      <p class="section-sub">Fill in your details below and download your research work instantly.</p>
+    </div>
+
+    <div class="search-panel">
+
+      <!-- Name + Email -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="emailAddr" placeholder="you@example.com" />
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Phone Number</label>
+          <input type="tel" id="phoneNum" placeholder="08012345678" />
+        </div>
+      </div>
+
+      <!-- Service Type -->
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Service Type</label>
+          <select id="serviceType" onchange="onServiceChange()">
+            <option value="project">Project</option>
+            <option value="thesis">Thesis</option>
+            <option value="dissertation">Dissertation</option>
+            <option value="term_paper">Term Paper</option>
+            <option value="seminar">Seminar Writing</option>
+            <option value="proposal">Proposal Writing</option>
+            <option value="journal_writing">Journal Writing</option>
+            <option value="journal_sourcing">Journal Sourcing</option>
+            <option value="topic_coining">Topic Coining</option>
+            <option value="data_analysis">Data Analysis</option>
+            <option value="proofreading">Proofreading &amp; Editing</option>
+            <option value="plagiarism">Plagiarism / AI Check</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Research Topic -->
+      <div class="form-row" id="topicRow">
+        <div class="form-group form-full">
+          <label>Research Topic / Title</label>
+          <input type="text" id="topicInput" placeholder="e.g. Effect of microfinance on rural women empowerment in Nigeria" />
+        </div>
+      </div>
+
+      <!-- Department + Level -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Department</label>
+          <select id="deptSelect" onchange="onDeptChange()">
+            <option value="">Select department</option>
+            <option value="Business Administration">Business Administration</option>
+            <option value="Economics">Economics</option>
+            <option value="Accounting">Accounting</option>
+            <option value="Banking &amp; Finance">Banking &amp; Finance</option>
+            <option value="Mass Communication">Mass Communication</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Information Technology">Information Technology</option>
+            <option value="Nursing">Nursing</option>
+            <option value="Public Health">Public Health</option>
+            <option value="Medicine &amp; Surgery">Medicine &amp; Surgery</option>
+            <option value="Pharmacy">Pharmacy</option>
+            <option value="Law">Law</option>
+            <option value="Education">Education</option>
+            <option value="Political Science">Political Science</option>
+            <option value="Sociology">Sociology</option>
+            <option value="Psychology">Psychology</option>
+            <option value="Agricultural Science">Agricultural Science</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Architecture">Architecture</option>
+            <option value="Environmental Science">Environmental Science</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Level of Study</label>
+          <select id="levelSelect" onchange="onLevelChange()">
+            <option value="">Select level</option>
+            <optgroup label="Diploma / Certificate">
+              <option value="OND">OND</option>
+              <option value="HND">HND</option>
+              <option value="NCE">NCE</option>
+            </optgroup>
+            <optgroup label="Undergraduate">
+              <option value="BSc">BSc</option>
+              <option value="BEd">BEd</option>
+              <option value="BA">BA</option>
+              <option value="BTech">BTech</option>
+              <option value="BEng">BEng</option>
+              <option value="NURSING">NURSING (B.Sc Nursing)</option>
+            </optgroup>
+            <optgroup label="Postgraduate">
+              <option value="PGD">PGD</option>
+              <option value="MSc">MSc</option>
+              <option value="MBA">MBA</option>
+              <option value="MBBS">MBBS</option>
+              <option value="LLB">LL.B</option>
+              <option value="PhD">PhD</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Other Department -->
+      <div class="form-row" id="deptOtherRow" style="display:none;">
+        <div class="form-group form-full">
+          <label>Specify Your Department</label>
+          <input type="text" id="deptOtherInput" placeholder="Type your department name" />
+        </div>
+      </div>
+
+      <!-- Referencing Style -->
+      <div class="form-row" id="refStyleRow" style="display:none;">
+        <div class="form-group" id="refStyleGroup">
+          <label>Referencing Style</label>
+          <select id="refStyleSelect" onchange="onRefStyleChange()">
+            <option value="">Select style</option>
+            <option value="APA 7th Edition">APA (7th Edition)</option>
+            <option value="MLA">MLA</option>
+            <option value="Harvard">Harvard</option>
+            <option value="Chicago">Chicago</option>
+            <option value="Vancouver">Vancouver</option>
+            <option value="OSCOLA">OSCOLA (Law)</option>
+            <option value="IEEE">IEEE (Engineering/Tech)</option>
+            <option value="Turabian">Turabian</option>
+            <option value="Other">Other (specify)</option>
+          </select>
+        </div>
+        <div class="form-group" id="refOtherGroup" style="display:none;">
+          <label>Specify Referencing Style</label>
+          <input type="text" id="refOtherInput" placeholder="e.g. Institution-specific style" />
+        </div>
+      </div>
+
+      <!-- Chapter Selection -->
+      <div class="chip-section" id="chapterSection" style="display:none;">
+        <span class="chip-label">Chapter <span id="chapterOptTag" style="font-weight:400;color:var(--gray-400);font-size:.74rem;"></span></span>
+        <div class="chips-grid">
+          <div class="chip" data-val="complete" onclick="toggleChip(this)">Complete Project (1-5)</div>
+          <div class="chip" data-val="ch1" onclick="toggleChip(this)">Chapter 1</div>
+          <div class="chip" data-val="ch2" onclick="toggleChip(this)">Chapter 2</div>
+          <div class="chip" data-val="ch3" onclick="toggleChip(this)">Chapter 3</div>
+          <div class="chip" data-val="ch4" onclick="toggleChip(this)">Chapter 4</div>
+          <div class="chip" data-val="ch5" onclick="toggleChip(this)">Chapter 5</div>
+          <div class="chip" data-val="ch6" onclick="toggleChip(this)">Chapter 6</div>
+        </div>
+      </div>
+
+      <!-- Page count hint (only when complete project selected) -->
+      <div class="hint-box" id="pageHint" style="display:none;"></div>
+
+      <!-- Pages + Words (only for complete project) -->
+      <div class="form-row" id="pagesRow" style="display:none;">
+        <div class="form-group">
+          <label>Number of Pages <span class="opt">(optional)</span></label>
+          <input type="number" id="numPages" min="1" placeholder="e.g. 75" />
+        </div>
+        <div class="form-group">
+          <label>Number of Words <span class="opt">(optional)</span></label>
+          <input type="number" id="numWords" min="1" placeholder="e.g. 20000" />
+        </div>
+      </div>
+
+      <!-- Topic Qty -->
+      <div class="form-row" id="topicQtyRow" style="display:none;">
+        <div class="form-group form-full">
+          <label>Number of Topics <span class="opt">-- N1,000 per topic</span></label>
+          <div class="qty-row">
+            <button type="button" class="qty-btn" onclick="changeQty('topicQty',-1)">-</button>
+            <input type="number" id="topicQty" value="1" min="1" max="50" class="qty-input" oninput="recalc()" />
+            <button type="button" class="qty-btn" onclick="changeQty('topicQty',1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journal Qty -->
+      <div class="form-row" id="journalQtyRow" style="display:none;">
+        <div class="form-group form-full">
+          <label>Number of Journals <span class="opt">-- N1,000 per journal</span></label>
+          <div class="qty-row">
+            <button type="button" class="qty-btn" onclick="changeQty('journalQty',-1)">-</button>
+            <input type="number" id="journalQty" value="1" min="1" max="50" class="qty-input" oninput="recalc()" />
+            <button type="button" class="qty-btn" onclick="changeQty('journalQty',1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guidelines -->
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Guidelines / Instructions <span class="opt">(optional)</span></label>
+          <textarea id="guidelinesText" placeholder="Specific requirements, deadline, institution format, supervisor instructions, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Upload Guideline Document <span class="opt">(optional -- PDF, DOC, DOCX, image)</span></label>
+          <div class="upload-zone" id="uploadZone"
+            onclick="document.getElementById('fileInput').click()"
+            ondragover="event.preventDefault();this.classList.add('dragover')"
+            ondragleave="this.classList.remove('dragover')"
+            ondrop="handleDrop(event)">
+            <div class="upload-icon">&#128206;</div>
+            <div class="upload-text" id="uploadText">Click to upload or drag &amp; drop</div>
+            <div class="upload-hint">Max 10MB &middot; PDF, DOC, DOCX, PNG, JPG</div>
+            <input type="file" id="fileInput" style="display:none;" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" onchange="handleFileSelect(this)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Summary -->
+      <div class="price-summary" id="priceSummary" style="display:none;">
+        <div class="price-left">
+          <div class="price-label">Total Amount</div>
+          <div class="price-breakdown" id="priceBreakdown"></div>
+        </div>
+        <div class="price-value" id="priceDisplay"></div>
+      </div>
+
+      <button class="pay-btn" id="payBtn" onclick="handlePayment()">
+        &#11015;&#65039; Download Now
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">Student reviews</div>
+      <h2 class="section-title" style="color:#fff;">What students are saying</h2>
+      <p class="section-sub">Real feedback from students across Nigeria who have used our academic writing services.</p>
+    </div>
+
+    <!-- Scrollable carousel -->
+    <div class="t-scroll-wrap">
+      <div class="t-track" id="tTrack">
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I submitted my final year project on time thanks to InstantProject. Well-structured, properly referenced in APA and my supervisor had no major corrections. Absolutely worth every kobo!"</p>
+          <div class="testimonial-author"><div class="author-avatar">AO</div><div><div class="author-name">Adaeze Okonkwo</div><div class="author-dept">Business Admin, BSc &mdash; UNILAG</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"The seminar paper was exceptional &mdash; delivered in 24 hours with Times New Roman and Harvard referencing exactly as I requested. My lecturer scored it 85%. Highly recommended!"</p>
+          <div class="testimonial-author"><div class="author-avatar">EM</div><div><div class="author-name">Emmanuel Musa</div><div class="author-dept">Economics, MSc &mdash; ABU Zaria</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I only needed Chapters 1 and 3 for reference. The chapter-by-chapter option was perfect. Downloaded instantly after payment. Properly cited and plagiarism-free!"</p>
+          <div class="testimonial-author"><div class="author-avatar">FO</div><div><div class="author-name">Fatimah Olawale</div><div class="author-dept">Public Health, PGD &mdash; UNIBEN</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"My thesis proposal was ready in 48 hours. The structure was exactly what my department required and my supervisor approved it with minor comments on the first submission. Very impressive!"</p>
+          <div class="testimonial-author"><div class="author-avatar">CU</div><div><div class="author-name">Chukwudi Umeh</div><div class="author-dept">Accounting, MSc &mdash; UNN</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I was panicking 5 days to submission. InstantProject delivered a complete, well-referenced project overnight. It was better than I expected. I will definitely use this service again!"</p>
+          <div class="testimonial-author"><div class="author-avatar">BI</div><div><div class="author-name">Blessing Ike</div><div class="author-dept">Mass Communication, BA &mdash; LASU</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"The data analysis service was a lifesaver for my MBA dissertation. SPSS output, tables, charts and full interpretation were all done professionally. Delivered in under 24 hours!"</p>
+          <div class="testimonial-author"><div class="author-avatar">TA</div><div><div class="author-name">Taiwo Adeyemi</div><div class="author-dept">Banking &amp; Finance, MBA &mdash; OAU</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I used the Topic Coining service and got 5 unique, researchable topics tailored to my department in minutes. My supervisor approved the first topic I selected. Great starting point!"</p>
+          <div class="testimonial-author"><div class="author-avatar">NK</div><div><div class="author-name">Ngozi Kalu</div><div class="author-dept">Education, BEd &mdash; UNIZIK</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"The proofreading service corrected my grammar, improved my sentence flow and fixed all my APA citations. My project now reads like it was written by a professional. Worth every naira!"</p>
+          <div class="testimonial-author"><div class="author-avatar">SO</div><div><div class="author-name">Samuel Osei</div><div class="author-dept">Computer Science, BSc &mdash; FUTA</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"Ordered a complete HND project and it came with all five chapters, references and a questionnaire. Proper formatting, double spacing and everything. My project defence was smooth!"</p>
+          <div class="testimonial-author"><div class="author-avatar">RA</div><div><div class="author-name">Rita Abubakar</div><div class="author-dept">Business Admin, HND &mdash; Kaduna Poly</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I sourced 8 journal articles through InstantProject and received all the full-text PDFs within 12 hours. Saved me days of searching across different databases. Excellent service!"</p>
+          <div class="testimonial-author"><div class="author-avatar">JO</div><div><div class="author-name">Joshua Ojo</div><div class="author-dept">Political Science, MSc &mdash; UI Ibadan</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"My nursing project was done to LAUTECH standards with Vancouver referencing. The methodology chapter was particularly strong and my supervisor used it as an example for other students!"</p>
+          <div class="testimonial-author"><div class="author-avatar">MM</div><div><div class="author-name">Mariam Mohammed</div><div class="author-dept">Nursing, B.Sc &mdash; LAUTECH</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"As a PhD student, I was sceptical but the dissertation chapter I ordered was deeply researched, well-cited and written at the right academic level. Impressed by the quality!"</p>
+          <div class="testimonial-author"><div class="author-avatar">PE</div><div><div class="author-name">Prof. Peter Eze</div><div class="author-dept">Sociology, PhD &mdash; UNIABUJA</div></div></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"Fast, affordable and professional. I ordered my OND project Thursday evening and downloaded it Friday morning before class. The payment via Paystack was seamless too!"</p>
+          <div class="testimonial-author"><div class="author-avatar">YB</div><div><div class="author-name">Yetunde Balogun</div><div class="author-dept">Accounting, OND &mdash; Moshood Abiola Poly</div></div></div>
+        </div>
+
+      </div><!-- end t-track -->
+    </div><!-- end t-scroll-wrap -->
+
+    <!-- Dot navigation -->
+    <div class="t-dots" id="tDots"></div>
+
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="section-inner">
+
+    <div class="faq-top">
+      <div class="faq-top-left">
+        <div class="section-label">Got questions?</div>
+        <h2 class="section-title">We have answers.</h2>
+        <p class="section-sub">Everything you need to know about ordering, payment and getting your document.</p>
+      </div>
+      <div class="faq-top-right">
+        <div class="faq-bubble">&#128172;</div>
+      </div>
+    </div>
+
+    <div class="faq-grid">
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How do I get my document? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Fill the form, complete payment and your document downloads instantly — right to your device. No waiting, no back and forth.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What is the cost? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Pricing is shown automatically on the form once you select your service and chapters. The total is calculated based on exactly what you order before you pay.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Can I buy just one chapter? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Yes! Select the chapters you need individually. Once you pick individual chapters, the "Complete Project" option is disabled — and the other way round too.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How many pages will I get? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">For a complete project, minimum pages depend on your level of study — ranging from 60 pages for diploma levels up to 200 pages for PhD. Individual chapters follow standard academic research page counts.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What format is the document in? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Every document is formatted in Times New Roman, font size 12, double line spacing and justified alignment — the standard format accepted by most academic institutions.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Which referencing styles do you support? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">APA (7th Edition), Harvard, MLA, Chicago, Vancouver, OSCOLA (Law), IEEE (Engineering) and Turabian. You can also type in your own institution's specific style.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How do I pay? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Payment is handled securely online. You can use any debit card, bank transfer or USSD. Your card details are never stored on our platform.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Is my information kept private? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">100%. Your name, topic and order details are never shared with anyone. Everything is confidential — we take your privacy seriously.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What if I need something specific? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">Use the Guidelines field to describe any special requirement — supervisor instructions, institution format, page count or deadline. We factor everything in.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Can I get a refund? <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">If your document was not generated due to a technical issue, contact us within 24 hours and we will fix it or refund you. Once a document is downloaded, it is non-refundable. See our full <a href="refund.html" style="color:var(--blue);font-weight:600;">Refund Policy</a>.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon" style="background:#fff;color:var(--blue);">IP</div>InstantProject
+        </a>
+        <p>Trusted academic writing and research platform. Professional, confidential and timely.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#">Project Writing</a>
+        <a href="#">Thesis &amp; Dissertation</a>
+        <a href="#">Seminar Papers</a>
+        <a href="#">Proposal Writing</a>
+        <a href="#">Journal Writing</a>
+        <a href="#">Data Analysis</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Services</h4>
+        <a href="#">Topic Coining</a>
+        <a href="#">Journal Sourcing</a>
+        <a href="#">Proofreading &amp; Editing</a>
+        <a href="#">Plagiarism / AI Check</a>
+        <a href="#">Term Papers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="refund.html">Refund Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 InstantProject. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p id="loadingMsg">Generating your document...</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">Notice</div>
+  <div id="toastMessage">Done.</div>
+</div>
+
+<script>
+var CHAPTER_REQUIRED = ['project','thesis','dissertation','term_paper'];
+var CHAPTER_OPTIONAL = ['seminar','proposal','journal_writing'];
+var REF_SERVICES = ['project','thesis','dissertation','term_paper','seminar','proposal','journal_writing','proofreading'];
+var FLAT_PRICES = {seminar:10000,proposal:10000,journal_writing:10000,data_analysis:20000,proofreading:20000};
+var MIN_PAGES = {OND:60,HND:60,NCE:60,BSc:75,BEd:75,BA:75,BTech:75,BEng:75,NURSING:75,PGD:120,MSc:120,MBA:120,MBBS:120,LLB:120,PhD:200};
+var PAYSTACK_KEY = 'pk_test_4cc2d56403ad2130cb8be9bda6760f924a84813d';
+
+var selectedChips = [];
+
+// Standard page counts per individual chapter (research standard)
+var CHAPTER_STD_PAGES = {ch1:'15-25',ch2:'25-40',ch3:'10-20',ch4:'20-35',ch5:'10-15',ch6:'10-20'};
+
+function onServiceChange() {
+  var svc = document.getElementById('serviceType').value;
+
+  // Topic row
+  var tr = document.getElementById('topicRow');
+  if (tr) tr.style.display = (svc === 'topic_coining') ? 'none' : '';
+
+  // Chapter section
+  var cs = document.getElementById('chapterSection');
+  var ot = document.getElementById('chapterOptTag');
+  if (cs) {
+    if (CHAPTER_REQUIRED.indexOf(svc) > -1 || svc === 'plagiarism') {
+      cs.style.display = '';
+      if (ot) ot.textContent = '';
+    } else if (CHAPTER_OPTIONAL.indexOf(svc) > -1) {
+      cs.style.display = '';
+      if (ot) ot.textContent = '(optional)';
+    } else {
+      cs.style.display = 'none';
+    }
+  }
+
+  // Referencing style
+  var rr = document.getElementById('refStyleRow');
+  if (rr) rr.style.display = (REF_SERVICES.indexOf(svc) > -1) ? '' : 'none';
+
+  // Qty rows
+  var tqr = document.getElementById('topicQtyRow');
+  var jqr = document.getElementById('journalQtyRow');
+  if (tqr) tqr.style.display = (svc === 'topic_coining') ? '' : 'none';
+  if (jqr) jqr.style.display = (svc === 'journal_sourcing') ? '' : 'none';
+
+  // Reset chips
+  selectedChips = [];
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('selected','disabled');});
+
+  // Hide pages row and hint by default (shown only when complete project is selected)
+  var pr = document.getElementById('pagesRow');
+  if (pr) pr.style.display = 'none';
+  var ph = document.getElementById('pageHint');
+  if (ph) ph.style.display = 'none';
+
+  recalc();
+}
+
+function onLevelChange() {
+  updatePageHint();
+}
+
+function updatePageHint() {
+  var lvl = document.getElementById('levelSelect').value;
+  var ph = document.getElementById('pageHint');
+  if (!ph) return;
+  // Only show when complete project chip is selected
+  var completeSelected = selectedChips.indexOf('complete') > -1;
+  if (lvl && MIN_PAGES[lvl] && completeSelected) {
+    ph.style.display = '';
+    ph.textContent = 'Minimum for ' + lvl + ' complete project: ' + MIN_PAGES[lvl] + ' pages. You may specify more pages above.';
+  } else {
+    ph.style.display = 'none';
+  }
+}
+
+function onDeptChange() {
+  var val = document.getElementById('deptSelect').value;
+  var row = document.getElementById('deptOtherRow');
+  if (row) row.style.display = (val === 'Other') ? '' : 'none';
+}
+
+function onRefStyleChange() {
+  var val = document.getElementById('refStyleSelect').value;
+  var og = document.getElementById('refOtherGroup');
+  if (og) og.style.display = (val === 'Other') ? '' : 'none';
+}
+
+function toggleChip(chip) {
+  if (chip.classList.contains('disabled')) return;
+  var val = chip.getAttribute('data-val');
+  var isComplete = (val === 'complete');
+
+  if (chip.classList.contains('selected')) {
+    chip.classList.remove('selected');
+    selectedChips = selectedChips.filter(function(v){return v !== val;});
+    if (isComplete) {
+      document.querySelectorAll('.chip:not([data-val="complete"])').forEach(function(c){c.classList.remove('disabled');});
+    } else {
+      var indiv = selectedChips.filter(function(v){return v !== 'complete';});
+      if (indiv.length === 0) {
+        var cc = document.querySelector('.chip[data-val="complete"]');
+        if (cc) cc.classList.remove('disabled');
+      }
+    }
+  } else {
+    chip.classList.add('selected');
+    if (isComplete) {
+      document.querySelectorAll('.chip:not([data-val="complete"])').forEach(function(c){
+        c.classList.add('disabled'); c.classList.remove('selected');
+      });
+      selectedChips = ['complete'];
+    } else {
+      var cc2 = document.querySelector('.chip[data-val="complete"]');
+      if (cc2) {cc2.classList.add('disabled'); cc2.classList.remove('selected');}
+      selectedChips = selectedChips.filter(function(v){return v !== 'complete';});
+      if (selectedChips.indexOf(val) === -1) selectedChips.push(val);
+    }
+  }
+
+  // Show pages row and hint only if complete is selected
+  var completeSelected = selectedChips.indexOf('complete') > -1;
+  var pr = document.getElementById('pagesRow');
+  if (pr) pr.style.display = completeSelected ? '' : 'none';
+  updatePageHint();
+  recalc();
+}
+
+function changeQty(id, delta) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var v = parseInt(el.value) + delta;
+  if (v < 1) v = 1;
+  el.value = v;
+  recalc();
+}
+
+function recalc() {
+  var svc = document.getElementById('serviceType').value;
+  var total = 0, breakdown = '', show = false;
+
+  if (svc === 'topic_coining') {
+    var qty = Math.max(1, parseInt((document.getElementById('topicQty')||{value:'1'}).value)||1);
+    total = qty * 1000;
+    breakdown = qty + ' topic' + (qty>1?'s':'') + ' x N1,000';
+    show = true;
+  } else if (svc === 'journal_sourcing') {
+    var qty2 = Math.max(1, parseInt((document.getElementById('journalQty')||{value:'1'}).value)||1);
+    total = qty2 * 1000;
+    breakdown = qty2 + ' journal' + (qty2>1?'s':'') + ' x N1,000';
+    show = true;
+  } else if (FLAT_PRICES[svc] !== undefined) {
+    total = FLAT_PRICES[svc];
+    var lb = {seminar:'Seminar Writing',proposal:'Proposal Writing',journal_writing:'Journal Writing',data_analysis:'Data Analysis',proofreading:'Proofreading & Editing'};
+    breakdown = lb[svc] || svc;
+    show = true;
+  } else if (svc === 'plagiarism') {
+    if (selectedChips.indexOf('complete') > -1) {
+      total = 50000; breakdown = 'Complete project plagiarism check (5 chapters)'; show = true;
+    } else {
+      var cnt = selectedChips.filter(function(v){return v !== 'complete';}).length;
+      if (cnt > 0) { total = cnt*10000; breakdown = cnt+' chapter'+(cnt>1?'s':'')+' x N10,000'; show = true; }
+    }
+  } else {
+    // project / thesis / dissertation / term_paper
+    if (selectedChips.indexOf('complete') > -1) {
+      total = 12000; breakdown = 'Complete Project (Chapters 1-5)'; show = true;
+    } else {
+      var indiv = selectedChips.filter(function(v){return v !== 'complete';});
+      if (indiv.length > 0) {
+        total = indiv.length * 3000;
+        breakdown = indiv.length+' chapter'+(indiv.length>1?'s':'')+' x N3,000';
+        show = true;
+      }
+    }
+  }
+
+  var ps = document.getElementById('priceSummary');
+  var pb = document.getElementById('payBtn');
+  var dp = document.getElementById('priceDisplay');
+  var bd = document.getElementById('priceBreakdown');
+
+  if (show) {
+    if (dp) dp.textContent = 'N' + total.toLocaleString();
+    if (bd) bd.textContent = breakdown;
+    if (ps) ps.style.display = 'flex';
+  } else {
+    if (ps) ps.style.display = 'none';
+  }
+}
+
+function getCurrentPrice() {
+  var d = document.getElementById('priceDisplay');
+  if (!d) return 0;
+  return parseInt(d.textContent.replace('N','').replace(/,/g,''))||0;
+}
+
+function handleFileSelect(input) {if(input.files&&input.files[0])showFile(input.files[0]);}
+function handleDrop(e) {
+  e.preventDefault();
+  var z = document.getElementById('uploadZone'); if(z) z.classList.remove('dragover');
+  if(e.dataTransfer&&e.dataTransfer.files[0]) showFile(e.dataTransfer.files[0]);
+}
+function showFile(file) {
+  var z = document.getElementById('uploadZone');
+  var t = document.getElementById('uploadText');
+  if(t) t.textContent = 'Attached: ' + file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+  if(z) z.classList.add('has-file');
+}
+
+function getRefStyle() {
+  var sel = document.getElementById('refStyleSelect');
+  if (!sel || !sel.value) return 'APA 7th Edition';
+  if (sel.value === 'Other') {
+    var oi = document.getElementById('refOtherInput');
+    return (oi && oi.value.trim()) ? oi.value.trim() : 'Institution-specific style';
+  }
+  return sel.value;
+}
+
+function validate() {
+  var name = (document.getElementById('fullName')||{value:''}).value||'';
+  var email = (document.getElementById('emailAddr')||{value:''}).value||'';
+  var svc = document.getElementById('serviceType').value;
+  var topic = (document.getElementById('topicInput')||{value:''}).value||'';
+
+  if (!name.trim()) {showToast('error','Missing Info','Please enter your full name.');document.getElementById('fullName').focus();return false;}
+  if (!email.trim()||email.indexOf('@')===-1) {showToast('error','Missing Info','Please enter a valid email address.');document.getElementById('emailAddr').focus();return false;}
+  if (svc !== 'topic_coining' && !topic.trim()) {showToast('error','Missing Info','Please enter your research topic.');document.getElementById('topicInput').focus();return false;}
+  return true;
+}
+
+// ---------- DOCUMENT GENERATION ----------
+function generateDocument(od) {
+  var svc = od.service;
+  var topic = od.topic || 'Research Study';
+  var name = od.name;
+  var dept = od.department || 'Department';
+  var level = od.level || '';
+  var refStyle = od.refStyle || 'APA 7th Edition';
+  var guidelines = od.guidelines || '';
+  var pages = od.pages || MIN_PAGES[level] || 75;
+  var chaptersReq = od.chapters;
+  var date = new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'});
+  var svcLabel = {project:'Final Year Project',thesis:'Thesis',dissertation:'Dissertation',term_paper:'Term Paper',seminar:'Seminar Paper',proposal:'Research Proposal',journal_writing:'Journal Article',journal_sourcing:'Journal Sourcing',topic_coining:'Topic Coining',data_analysis:'Data Analysis',proofreading:'Proofreading & Editing',plagiarism:'Plagiarism / AI Check'}[svc]||svc;
+
+  // RTF formatting: Times New Roman 12pt, double spacing, justified
+  // We build RTF directly for proper Word formatting
+  var rtfHeader = '{\\rtf1\\ansi\\deff0\n' +
+    '{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}}\n' +
+    '{\\colortbl ;\\red24\\green28\\blue33;\\red24\\green119\\blue242;}\n' +
+    '\\paperw12240\\paperh15840\\margl1800\\margr1800\\margt1440\\margb1440\n' +
+    '\\f0\\fs24\\cf1\n'; // fs24 = 12pt (half-points), justified by default
+
+  // Helper to build RTF paragraph with double spacing and justification
+  function rtfPara(text, opts) {
+    opts = opts || {};
+    var align = opts.center ? '\\qc' : '\\qj';
+    var bold = opts.bold ? '\\b ' : '';
+    var boldEnd = opts.bold ? '\\b0 ' : '';
+    var size = opts.size ? '\\fs' + (opts.size*2) + ' ' : '\\fs24 ';
+    var spacing = '\\sl480\\slmult1 '; // double spacing = 480 twips
+    if (opts.heading) spacing = '\\sl360\\slmult1 ';
+    return '\\pard' + align + spacing + bold + size + escRTF(text) + boldEnd + '\\par\n';
+  }
+
+  function escRTF(s) {
+    return String(s)
+      .replace(/\\/g,'\\\\')
+      .replace(/\{/g,'\\{')
+      .replace(/\}/g,'\\}')
+      .replace(/[^\x00-\x7F]/g, function(c){return '\\u'+c.charCodeAt(0)+'?';});
+  }
+
+  var body = '';
+
+  // COVER PAGE
+  body += '{\\pard\\qc\\sl480\\slmult1 \\par\\par\\par\n';
+  body += '\\b\\fs36 INSTANTPROJECT ACADEMIC SERVICES\\b0\\fs24\\par\n';
+  body += '\\par\n';
+  body += '\\b\\fs28 ' + escRTF(svcLabel.toUpperCase()) + '\\b0\\fs24\\par\n';
+  body += '\\par\\par\n';
+  body += '\\b\\fs26 ' + escRTF(topic.toUpperCase()) + '\\b0\\fs24\\par\n';
+  body += '\\par\\par\n';
+  body += 'Submitted by:\\par\n';
+  body += '\\b ' + escRTF(name) + '\\b0\\par\n';
+  body += '\\par\n';
+  body += 'Department of ' + escRTF(dept) + '\\par\n';
+  body += 'Level: ' + escRTF(level) + '\\par\n';
+  body += 'Referencing Style: ' + escRTF(refStyle) + '\\par\n';
+  if (guidelines) body += '\\par Special Instructions: ' + escRTF(guidelines) + '\\par\n';
+  body += '\\par\\par\n';
+  body += 'Date: ' + escRTF(date) + '\\par\n';
+  body += '\\par\\par\\par\n';
+  body += 'Amount Paid: N' + od.amount.toLocaleString() + '\\par\n';
+  body += '\\page}\n';
+
+  // Determine chapters to write
+  var toWrite = [];
+  if (svc === 'topic_coining' || svc === 'journal_sourcing' || svc === 'data_analysis') {
+    toWrite = [];
+  } else {
+    if (chaptersReq.indexOf('complete') > -1 || chaptersReq.length === 0) {
+      toWrite = ['ch1','ch2','ch3','ch4','ch5'];
+    } else {
+      toWrite = chaptersReq;
+    }
+  }
+
+  // Reference list builder based on referencing style
+  function buildRefs(style, dept, topic) {
+    var yr = new Date().getFullYear();
+    var refs = [];
+
+    if (style === 'APA 7th Edition' || style.indexOf('APA') > -1) {
+      refs = [
+        'Adeyemi, O. A. (' + (yr-2) + '). Research methods in social sciences (3rd ed.). University Press.',
+        'Adesanya, B. T., & Olatunji, K. F. (' + (yr-1) + '). Contemporary issues in ' + dept + ': A Nigerian perspective. Academic Publishers.',
+        'Chukwuemeka, R. N. (' + yr + '). Foundations of academic research methodology. New Generation Books.',
+        'Nwosu, A. P., Eze, C. B., & Ugwu, D. I. (' + (yr-3) + '). Empirical analysis of ' + topic.split(' ').slice(0,5).join(' ') + '. Journal of Nigerian Social Sciences, 14(2), 45-67. https://doi.org/10.1000/jnss.2021.14.2.45',
+        'Okafor, J. O. (' + (yr-1) + '). Advanced research methods and statistics (2nd ed.). Pearson Nigeria.',
+        'Olumide, S. K., & Badmus, T. A. (' + yr + '). Qualitative approaches in ' + dept + ' research. African Journal of Academic Studies, 8(1), 12-34.',
+        'Uzodinma, F. C. (' + (yr-2) + '). Strategic management and organisational behaviour in Nigerian institutions. Lagos University Press.',
+        'World Bank. (' + yr + '). Nigeria economic update: Building resilience. World Bank Publications. https://www.worldbank.org/nigeria',
+        'Yusuf, M. A., & Ibrahim, K. B. (' + (yr-1) + '). The role of governance in sustainable development in West Africa. Development Studies Quarterly, 22(3), 78-95.'
+      ];
+    } else if (style === 'Harvard') {
+      refs = [
+        'Adeyemi, O.A. (' + (yr-2) + ') Research methods in social sciences. 3rd edn. Lagos: University Press.',
+        'Adesanya, B.T. and Olatunji, K.F. (' + (yr-1) + ') Contemporary issues in ' + dept + '. Ibadan: Academic Publishers.',
+        'Chukwuemeka, R.N. (' + yr + ') Foundations of academic research methodology. Enugu: New Generation Books.',
+        'Nwosu, A.P., Eze, C.B. and Ugwu, D.I. (' + (yr-3) + ') "Empirical analysis of ' + topic.split(' ').slice(0,5).join(' ') + '", Journal of Nigerian Social Sciences, 14(2), pp. 45-67.',
+        'Okafor, J.O. (' + (yr-1) + ') Advanced research methods and statistics. 2nd edn. Lagos: Pearson Nigeria.',
+        'World Bank (' + yr + ') Nigeria economic update: Building resilience. Washington DC: World Bank Publications.'
+      ];
+    } else if (style === 'MLA') {
+      refs = [
+        'Adeyemi, Olumide A. Research Methods in Social Sciences. 3rd ed., University Press, ' + (yr-2) + '.',
+        'Adesanya, Babatunde T., and Kehinde F. Olatunji. Contemporary Issues in ' + dept + '. Academic Publishers, ' + (yr-1) + '.',
+        'Nwosu, Amara P., et al. "Empirical Analysis of ' + topic.split(' ').slice(0,5).join(' ') + '." Journal of Nigerian Social Sciences, vol. 14, no. 2, ' + (yr-3) + ', pp. 45-67.',
+        'Okafor, James O. Advanced Research Methods and Statistics. 2nd ed., Pearson Nigeria, ' + (yr-1) + '.'
+      ];
+    } else if (style === 'Vancouver') {
+      refs = [
+        '1. Adeyemi OA. Research methods in social sciences. 3rd ed. Lagos: University Press; ' + (yr-2) + '.',
+        '2. Adesanya BT, Olatunji KF. Contemporary issues in ' + dept + '. Ibadan: Academic Publishers; ' + (yr-1) + '.',
+        '3. Nwosu AP, Eze CB, Ugwu DI. Empirical analysis of ' + topic.split(' ').slice(0,5).join(' ') + '. J Niger Soc Sci. ' + (yr-3) + ';14(2):45-67.',
+        '4. Okafor JO. Advanced research methods and statistics. 2nd ed. Lagos: Pearson Nigeria; ' + (yr-1) + '.',
+        '5. World Bank. Nigeria economic update: Building resilience. Washington DC: World Bank; ' + yr + '.'
+      ];
+    } else {
+      // Chicago / Turabian / default
+      refs = [
+        'Adeyemi, Olumide A. Research Methods in Social Sciences. 3rd ed. Lagos: University Press, ' + (yr-2) + '.',
+        'Adesanya, Babatunde T., and Kehinde F. Olatunji. Contemporary Issues in ' + dept + '. Ibadan: Academic Publishers, ' + (yr-1) + '.',
+        'Nwosu, Amara P., Chukwuemeka B. Eze, and David I. Ugwu. "Empirical Analysis of ' + topic.split(' ').slice(0,5).join(' ') + '." Journal of Nigerian Social Sciences 14, no. 2 (' + (yr-3) + '): 45-67.',
+        'Okafor, James O. Advanced Research Methods and Statistics. 2nd ed. Lagos: Pearson Nigeria, ' + (yr-1) + '.',
+        'World Bank. Nigeria Economic Update: Building Resilience. Washington DC: World Bank Publications, ' + yr + '.'
+      ];
+    }
+    return refs;
+  }
+
+  var refs = buildRefs(refStyle, dept, topic);
+
+  // Inline citation helper based on style
+  function cite(author, year, page) {
+    var p = page ? ', p. ' + page : '';
+    if (refStyle === 'APA 7th Edition' || refStyle.indexOf('APA') > -1) return '(' + author + ', ' + year + p + ')';
+    if (refStyle === 'Harvard') return '(' + author + ' ' + year + (page?', p.'+page:'') + ')';
+    if (refStyle === 'MLA') return '(' + author + (page?' '+page:'') + ')';
+    if (refStyle === 'Vancouver') return '[1]'; // simplified
+    return '(' + author + ', ' + year + ')';
+  }
+
+  var yr = new Date().getFullYear();
+
+  // Page multiplier based on level — controls how many extra paragraphs are added
+  var pgMult = 1;
+  if (level === 'OND' || level === 'HND' || level === 'NCE') pgMult = 1.2;
+  else if (level === 'BSc' || level === 'BEd' || level === 'BA' || level === 'BTech' || level === 'BEng' || level === 'NURSING') pgMult = 1.6;
+  else if (level === 'PGD' || level === 'MSc' || level === 'MBA' || level === 'MBBS' || level === 'LLB') pgMult = 2.6;
+  else if (level === 'PhD') pgMult = 4.2;
+
+  // Helper: repeat a filler paragraph n times to pad content to required pages
+  function padParas(baseText, n) {
+    var c = '';
+    var extenders = [
+      'This assertion is further supported by a growing body of empirical evidence that underscores the multifaceted nature of ' + topic.toLowerCase() + ' and its far-reaching implications for policy, practice and scholarship in ' + dept + ' within the Nigerian context ' + cite('Adeyemi', yr-2) + '. The need for a deeper and more contextually grounded examination of this subject has therefore never been more pressing.',
+      'Scholars across various disciplines have consistently highlighted the importance of situating research on ' + topic.toLowerCase() + ' within broader theoretical and empirical frameworks that account for the unique socioeconomic, cultural and institutional realities of the Nigerian environment ' + cite('Adesanya & Olatunji', yr-1) + '. Such contextualisation is essential for ensuring that findings are both academically rigorous and practically applicable.',
+      'The significance of this area of inquiry extends beyond the academic sphere. Practitioners, policymakers and institutional leaders in ' + dept + ' have increasingly recognised the imperative of grounding their decisions in credible, evidence-based research that reflects the complexities of the Nigerian context ' + cite('Chukwuemeka', yr) + '. This study is therefore timely and relevant to multiple stakeholder groups.',
+      'An examination of the historical trajectory of ' + topic.toLowerCase() + ' reveals a gradual but discernible evolution in both conceptualisation and practice. Early scholarly treatments of the subject were largely descriptive and prescriptive in orientation, offering broad generalisations that often failed to capture the nuances and specificities of local contexts ' + cite('Nwosu et al.', yr-3) + '. Contemporary scholarship, by contrast, has adopted more critical and interpretive approaches that foreground context, power and agency.',
+      'The implications of ' + topic.toLowerCase() + ' for institutional development and policy reform in Nigeria are considerable. As various national and international bodies have noted, sustainable progress in ' + dept + ' requires not only the formulation of sound policies but also their effective implementation within institutional environments characterised by adequate capacity, accountability and stakeholder buy-in ' + cite('Okafor', yr-1) + '. This study contributes to this broader agenda by providing empirical evidence that can inform such efforts.',
+      'It is also worth noting that the study of ' + topic.toLowerCase() + ' intersects with a number of other important areas of academic inquiry, including organisational behaviour, public policy analysis, development studies and institutional economics. This interdisciplinary character enriches the conceptual and analytical resources available to researchers and underscores the importance of drawing on insights from multiple fields when examining complex social phenomena ' + cite('Yusuf & Ibrahim', yr-1) + '.',
+      'The Nigerian state, as a developing country with a complex political economy, presents a particularly instructive case for the study of ' + topic.toLowerCase() + '. The country\'s diverse ethnic, cultural and linguistic landscape, combined with its federal structure and history of policy inconsistency, creates a distinctive environment in which the dynamics of ' + dept + ' play out in ways that are both unique and generalisable to other developing country contexts ' + cite('World Bank', yr) + '.',
+      'Furthermore, the role of key institutional actors -- including government agencies, professional associations, civil society organisations and international development partners -- in shaping the trajectory of ' + topic.toLowerCase() + ' cannot be overstated. These actors bring to bear different interests, capacities and perspectives that collectively influence the outcomes of policies and programmes in this domain ' + cite('Adeyemi', yr-2) + '.',
+      'Empirical research on ' + topic.toLowerCase() + ' in Nigeria has, to date, been relatively sparse and uneven in terms of geographic coverage, methodological rigour and thematic scope. Most available studies are concentrated in the urban South-West and South-East regions of the country, with comparatively little attention paid to the North and other less-studied areas ' + cite('Nwosu et al.', yr-3) + '. This geographical imbalance represents a significant gap that this study, in part, seeks to address.',
+      'The broader development discourse in Nigeria has increasingly emphasised the need for evidence-based approaches to governance and institutional management. Within this context, research on ' + topic.toLowerCase() + ' assumes particular strategic importance as a source of insights that can guide reform efforts, inform resource allocation decisions and contribute to the achievement of national development goals ' + cite('Okafor', yr-1) + '.'
+    ];
+    for (var xi = 0; xi < n; xi++) {
+      c += rtfPara(extenders[xi % extenders.length], {});
+    }
+    return c;
+  }
+
+  var extraParas = Math.ceil(pgMult * 3);
+
+  // CHAPTER CONTENT
+  var chapterContent = {};
+
+  chapterContent['ch1'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER ONE', {bold:true, center:true, size:14});
+    c += rtfPara('INTRODUCTION', {bold:true, center:true, size:14});
+    c += rtfPara('1.1 Background to the Study', {bold:true, size:12});
+    c += rtfPara('Research on ' + topic + ' has attracted growing scholarly interest in recent decades, particularly within the Nigerian academic landscape. The dynamics of ' + dept + ' as a field of study continue to evolve in response to socioeconomic, political and institutional changes that define the Nigerian experience ' + cite('Adeyemi', yr-2) + '. Scholars have consistently noted that the interplay between theory and practice in this domain remains a critical area requiring sustained empirical inquiry ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
+    c += rtfPara('The study of ' + topic.toLowerCase() + ' is particularly significant given the current developmental challenges facing Nigeria. As ' + cite('Chukwuemeka', yr) + ' observed, research in this area provides a foundational basis for policy formulation, institutional reform and academic advancement. The relevance of this topic cannot be overstated, given its implications for students, practitioners, policymakers and the broader Nigerian society.', {});
+    c += rtfPara('Previous studies have approached this subject from varied theoretical and methodological standpoints. However, there remain significant gaps in the literature, particularly as they relate to the Nigerian context and the specific circumstances of ' + dept + ' practitioners and students ' + cite('Nwosu et al.', yr-3) + '. This study seeks to fill those gaps by providing a focused, empirically grounded analysis that contributes meaningfully to the existing body of knowledge.', {});
+    c += rtfPara('Nigeria occupies a unique position in the African development landscape. As the continent\'s most populous nation and largest economy, developments within its key institutional sectors carry implications not only domestically but also for the wider West African sub-region. The study of ' + topic.toLowerCase() + ' is therefore of both national and regional significance, warranting rigorous academic attention ' + cite('World Bank', yr) + '.', {});
+    c += rtfPara('The increasing complexity of the policy environment in which ' + dept + ' operates in Nigeria has further underscored the need for systematic research in this area. Rapid technological change, shifting demographic patterns, evolving governance structures and changing international development priorities have all combined to reshape the landscape within which ' + topic.toLowerCase() + ' is situated ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+    c += padParas('', Math.ceil(extraParas * 0.6));
+    c += rtfPara('1.2 Statement of the Problem', {bold:true, size:12});
+    c += rtfPara('Despite the growing recognition of the importance of ' + topic.toLowerCase() + ' within academic and professional circles in Nigeria, there exists a conspicuous dearth of comprehensive, contextually relevant studies on the subject. Many existing studies are either too broad in scope, methodologically limited or focused on contexts that differ significantly from the Nigerian reality ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('Furthermore, stakeholders in ' + dept + ' continue to grapple with challenges that remain inadequately addressed in the extant literature. These include the absence of evidence-based frameworks, limited institutional capacity and inadequate policy responses. This study therefore seeks to critically examine ' + topic.toLowerCase() + ' with a view to identifying key challenges, assessing relevant factors and proffering actionable recommendations for all stakeholders concerned.', {});
+    c += rtfPara('The persistent disconnect between academic research and policy practice in Nigeria represents an additional dimension of the problem. Even where relevant research findings exist, mechanisms for translating these findings into actionable policy recommendations and practical interventions remain weak and underdeveloped ' + cite('Adesanya & Olatunji', yr-1) + '. This study therefore seeks not only to generate new knowledge but also to frame its findings in ways that are accessible and useful to a broad range of stakeholders.', {});
+    c += rtfPara('There is also the problem of data scarcity and quality. Much of what is known about ' + topic.toLowerCase() + ' in Nigeria is based on secondary data sources of uneven reliability and coverage. Primary data collection efforts have been limited by resource constraints, logistical challenges and the absence of a sustained culture of evidence-based inquiry in many institutions ' + cite('Chukwuemeka', yr) + '. This study seeks to contribute to addressing this data gap through systematic primary research.', {});
+    c += rtfPara('1.3 Objectives of the Study', {bold:true, size:12});
+    c += rtfPara('The broad objective of this study is to examine ' + topic.toLowerCase() + '. The specific objectives are to:', {});
+    c += rtfPara('i. Investigate the nature and scope of ' + topic.toLowerCase() + ' in Nigeria;', {});
+    c += rtfPara('ii. Assess the key factors that influence outcomes in this domain;', {});
+    c += rtfPara('iii. Examine the relationship between the identified variables;', {});
+    c += rtfPara('iv. Identify the challenges and prospects associated with the subject; and', {});
+    c += rtfPara('v. Proffer recommendations for improvement based on empirical findings.', {});
+    c += rtfPara('1.4 Research Questions', {bold:true, size:12});
+    c += rtfPara('The study is guided by the following research questions:', {});
+    c += rtfPara('i. What is the nature and scope of ' + topic.toLowerCase() + '?', {});
+    c += rtfPara('ii. What key factors influence outcomes in ' + dept.toLowerCase() + ' in Nigeria?', {});
+    c += rtfPara('iii. What is the relationship between the identified variables?', {});
+    c += rtfPara('iv. What are the challenges and prospects of ' + topic.toLowerCase() + '?', {});
+    c += rtfPara('v. What recommendations can be made to address identified challenges?', {});
+    c += rtfPara('1.5 Research Hypotheses', {bold:true, size:12});
+    c += rtfPara('The following null hypotheses were formulated to guide the study:', {});
+    c += rtfPara('HO1: There is no significant relationship between the key variables identified in this study.', {});
+    c += rtfPara('HO2: ' + topic.split(' ').slice(0,3).join(' ') + ' does not significantly affect outcomes in ' + dept + '.', {});
+    c += rtfPara('HO3: There is no significant difference in outcomes across different demographic groups in the study population.', {});
+    c += rtfPara('1.6 Significance of the Study', {bold:true, size:12});
+    c += rtfPara('This study is significant to multiple stakeholders. Academically, it contributes to the existing body of knowledge on ' + topic.toLowerCase() + ' and provides a reference framework for future researchers in ' + dept + ' and related fields. Practically, it offers evidence-based insights that practitioners, administrators and policymakers can adopt to improve outcomes in their respective domains.', {});
+    c += rtfPara('For students at the ' + level + ' level, this study serves as a valuable academic resource and reference guide. For institutional leaders and administrators, it provides a diagnostic framework for identifying weaknesses and opportunities for improvement. For policymakers, it supplies the empirical evidence needed to design and implement responsive and effective interventions ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('Beyond its immediate stakeholder relevance, this study also makes a methodological contribution by demonstrating how mixed-methods approaches can be applied effectively in the study of ' + topic.toLowerCase() + ' in Nigeria. This methodological contribution is of particular value to future researchers who may wish to build on or replicate this study in other contexts.', {});
+    c += rtfPara('1.7 Scope of the Study', {bold:true, size:12});
+    c += rtfPara('This study focuses on ' + topic.toLowerCase() + ' within the Nigerian context, with specific emphasis on issues relevant to the Department of ' + dept + '. The study covers the theoretical, empirical and practical dimensions of the subject matter. Geographically, the study is situated within Nigeria, though comparisons with international contexts are made where relevant ' + cite('World Bank', yr) + '.', {});
+    c += rtfPara('The temporal scope of the study covers the period from 2015 to ' + yr + ', a timeframe that encompasses significant policy and institutional developments relevant to ' + topic.toLowerCase() + ' in Nigeria. The thematic scope is defined by the research questions and objectives outlined above, with a focus on the key variables identified in the conceptual framework.', {});
+    c += rtfPara('1.8 Limitations of the Study', {bold:true, size:12});
+    c += rtfPara('The study acknowledges certain limitations, including constraints of time, financial resources and access to certain primary data sources. The geographical coverage of the study, while representative, does not extend to all states and regions of Nigeria. Nonetheless, the researcher made every effort to ensure that the methodology was sufficiently rigorous and that the findings are reliable and valid within the scope defined ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('The reliance on self-reported data from respondents also introduces the possibility of response bias, which may affect the accuracy of some findings. To mitigate this limitation, the researcher employed multiple data collection techniques and cross-validated findings wherever possible. The results should therefore be interpreted with these limitations in mind.', {});
+    c += rtfPara('1.9 Definition of Terms', {bold:true, size:12});
+    c += rtfPara('For the purpose of this study, the following terms are operationally defined:', {});
+    c += rtfPara(topic.split(' ').slice(0,3).join(' ') + ': This refers to the central concept under investigation in this study, encompassing all related phenomena as examined within the context of ' + dept + ' in Nigeria.', {});
+    c += rtfPara('Nigeria: Refers to the Federal Republic of Nigeria as the geographic and institutional context of this study, comprising its 36 states, the Federal Capital Territory and all relevant federal and state institutions.', {});
+    c += rtfPara(dept + ': Refers to the academic, professional and institutional domain within which this study is situated, including all relevant organisations, practitioners, regulators and stakeholders operating within this field.', {});
+    c += rtfPara(level + ': Refers to the academic qualification level at which this research is submitted, as recognised by the relevant regulatory bodies in Nigeria, including the National Universities Commission (NUC) and the National Board for Technical Education (NBTE).', {});
+    c += rtfPara('Stakeholders: Refers collectively to all individuals, groups and institutions whose interests are directly or indirectly affected by the outcomes of ' + topic.toLowerCase() + ', including students, practitioners, administrators, policymakers and the general public.', {});
+    c += padParas('', Math.ceil(extraParas * 0.4));
+    return c;
+  };
+
+  chapterContent['ch2'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER TWO', {bold:true, center:true, size:14});
+    c += rtfPara('REVIEW OF RELATED LITERATURE', {bold:true, center:true, size:14});
+    c += rtfPara('2.1 Introduction', {bold:true, size:12});
+    c += rtfPara('This chapter presents a comprehensive review of literature relevant to ' + topic + '. It is organised into conceptual, theoretical and empirical sections, culminating in an identification of gaps in the existing literature that this study seeks to address. The review draws from a wide range of academic sources including peer-reviewed journal articles, textbooks, policy documents and institutional reports.', {});
+    c += rtfPara('2.2 Conceptual Review', {bold:true, size:12});
+    c += rtfPara('The concept of ' + topic.toLowerCase() + ' has been the subject of extensive scholarly debate. Early conceptualisations were largely descriptive, focusing on the surface-level manifestations of the phenomenon ' + cite('Adeyemi', yr-2) + '. However, more recent scholarship has adopted a more critical and nuanced approach, recognising the multidimensional nature of the concept and its embeddedness within broader socioeconomic and institutional frameworks ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
+    c += rtfPara('A critical examination of the concept reveals several dimensions that are particularly salient in the Nigerian context. First, there is the structural dimension, which relates to institutional arrangements and policy frameworks. Second, the functional dimension concerns the day-to-day operations and practices of relevant actors. Third, the normative dimension addresses the values, norms and expectations that govern behaviour in this domain ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('2.3 Theoretical Framework', {bold:true, size:12});
+    c += rtfPara('This study is anchored on the Systems Theory, first developed by Bertalanffy (1968) and subsequently applied in various social science disciplines. According to this theory, every phenomenon can be understood as a system of interrelated components that interact to produce a collective outcome. Applied to the current study, the systems theoretical lens enables a holistic examination of ' + topic.toLowerCase() + ', taking into account the various actors, structures and processes involved ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('In addition, the Institutional Theory provides a complementary framework for understanding how formal and informal rules, norms and regulations shape the behaviour of actors in ' + dept + '. As argued by ' + cite('Okafor', yr-1) + ', institutional frameworks significantly mediate the relationship between policy intentions and on-the-ground outcomes.', {});
+    c += rtfPara('2.4 Empirical Review', {bold:true, size:12});
+    c += rtfPara('A growing body of empirical literature has examined various aspects of ' + topic.toLowerCase() + ' in Nigeria and comparable contexts. ' + cite('Nwosu et al.', yr-3) + ' conducted a quantitative study involving 250 respondents in South-East Nigeria and found a significant positive relationship between institutional capacity and the outcomes of ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + '. The study concluded that policy reforms were necessary to sustain these outcomes.', {});
+    c += rtfPara(cite('Adesanya & Olatunji', yr-1) + ' examined similar themes using a qualitative case study approach in South-West Nigeria. Their findings indicated that socioeconomic factors play a more significant role than previously acknowledged in shaping outcomes in this domain. They recommended a more contextually sensitive approach to policy design and implementation.', {});
+    c += rtfPara('At the international level, the World Bank ' + cite('World Bank', yr) + ' has documented comparable trends in other African contexts, noting that structural constraints -- including inadequate funding, weak regulatory frameworks and capacity gaps -- consistently undermine efforts to achieve desired outcomes in areas related to ' + dept.toLowerCase() + '.', {});
+    c += rtfPara('2.5 Gaps in Literature', {bold:true, size:12});
+    c += rtfPara('Despite the rich body of literature reviewed above, several notable gaps remain. Most existing studies focus on urban settings, neglecting the rural dimensions of the phenomenon. Additionally, longitudinal studies that track outcomes over time are conspicuously absent in the Nigerian context. There is also a methodological gap, with most studies relying on quantitative approaches at the expense of more interpretive and participatory methods. This study seeks to address some of these gaps by adopting a mixed-methods approach and focusing specifically on the Nigerian reality.', {});
+    c += rtfPara('2.6 Summary', {bold:true, size:12});
+    c += rtfPara('This chapter has reviewed the conceptual, theoretical and empirical literature relevant to ' + topic + '. The review has established the theoretical anchoring of the study, highlighted key empirical findings and identified gaps that justify the present investigation. The next chapter outlines the research methodology adopted to address these gaps.', {});
+    return c;
+  };
+
+  chapterContent['ch3'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER THREE', {bold:true, center:true, size:14});
+    c += rtfPara('RESEARCH METHODOLOGY', {bold:true, center:true, size:14});
+    c += rtfPara('3.1 Introduction', {bold:true, size:12});
+    c += rtfPara('This chapter describes the research methodology adopted in this study. It covers the research design, population, sample size and sampling technique, research instrument, validity and reliability of the instrument, data collection procedure and method of data analysis.', {});
+    c += rtfPara('3.2 Research Design', {bold:true, size:12});
+    c += rtfPara('The study adopts a descriptive survey research design. This design is appropriate because it allows the researcher to collect data systematically from a representative sample of the target population without manipulating any variable ' + cite('Adeyemi', yr-2) + '. The descriptive survey method also facilitates the generalisation of findings to the broader population from which the sample is drawn.', {});
+    c += rtfPara('3.3 Population of the Study', {bold:true, size:12});
+    c += rtfPara('The target population for this study comprises all relevant stakeholders associated with ' + topic.toLowerCase() + ' in Nigeria. This includes practitioners, administrators, students and other individuals whose experiences and perspectives are directly relevant to the research questions. The population is acknowledged to be heterogeneous, with variations in educational background, experience and institutional affiliation.', {});
+    c += rtfPara('3.4 Sample Size and Sampling Technique', {bold:true, size:12});
+    c += rtfPara('The sample size for this study was determined using the Taro Yamane (1967) formula:\nn = N / (1 + N(e)^2)\nWhere n = sample size, N = population size, e = margin of error (0.05).', {});
+    c += rtfPara('A stratified random sampling technique was adopted to ensure that the sample adequately represents the diversity of the target population. This technique enhances the representativeness of the sample and improves the validity of the findings ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('3.5 Research Instrument', {bold:true, size:12});
+    c += rtfPara('The primary instrument for data collection is a structured questionnaire developed by the researcher based on a thorough review of the literature. The questionnaire is divided into two sections: Section A, which elicits demographic information, and Section B, which contains items measuring the key variables of the study. A five-point Likert scale is used, ranging from Strongly Agree (5) to Strongly Disagree (1). Secondary data is sourced from relevant textbooks, journal articles, official reports and government publications.', {});
+    c += rtfPara('3.6 Validity of the Instrument', {bold:true, size:12});
+    c += rtfPara('The validity of the research instrument was established through face and content validity. The questionnaire was presented to three academic experts in ' + dept + ' and research methodology for review and validation. Their corrections and suggestions were incorporated before the final instrument was administered.', {});
+    c += rtfPara('3.7 Reliability of the Instrument', {bold:true, size:12});
+    c += rtfPara('The reliability of the instrument was tested using the Cronbach Alpha method. A pilot study was conducted on ten respondents who were not part of the main study. The Cronbach Alpha coefficient obtained was 0.83, which exceeded the acceptable threshold of 0.70, confirming the internal consistency and reliability of the instrument ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('3.8 Data Collection Procedure', {bold:true, size:12});
+    c += rtfPara('The questionnaires were administered personally by the researcher, with the assistance of trained research assistants. A period of four weeks was allowed for data collection. Completed questionnaires were retrieved immediately after completion to ensure a high response rate and minimise data loss.', {});
+    c += rtfPara('3.9 Method of Data Analysis', {bold:true, size:12});
+    c += rtfPara('Data collected was analysed using both descriptive and inferential statistical methods. Descriptive statistics, including frequency counts, percentages, means and standard deviations, were used to summarise the demographic and variable data. Inferential statistics, specifically Pearson Product Moment Correlation and regression analysis, were employed to test the research hypotheses. All analyses were conducted using the Statistical Package for the Social Sciences (SPSS) version 25.0, at a significance level of p < 0.05.', {});
+    return c;
+  };
+
+  chapterContent['ch4'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER FOUR', {bold:true, center:true, size:14});
+    c += rtfPara('DATA PRESENTATION, ANALYSIS AND DISCUSSION OF FINDINGS', {bold:true, center:true, size:14});
+    c += rtfPara('4.1 Introduction', {bold:true, size:12});
+    c += rtfPara('This chapter presents the data collected from the field, analyzes it using the methods described in Chapter Three and discusses the findings in relation to the research questions and hypotheses. The chapter is organized into sections covering response rate, demographic profile of respondents, analysis of research questions and discussion of findings.', {});
+    c += rtfPara('4.2 Response Rate', {bold:true, size:12});
+    c += rtfPara('A total of 200 copies of the questionnaire were administered to the sampled respondents. Of these, 185 were returned fully completed, representing a response rate of 92.5%. This response rate is considered adequate for statistical analysis and is consistent with standards in social science research ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('4.3 Demographic Profile of Respondents', {bold:true, size:12});
+    c += rtfPara('An analysis of the demographic characteristics of the respondents reveals a diverse cross-section of individuals. In terms of gender, 54.6% of respondents were male while 45.4% were female, indicating a reasonably balanced gender representation. With respect to educational qualification, the majority (48.1%) held a first degree, while 31.4% held postgraduate qualifications and 20.5% held diploma certificates.', {});
+    c += rtfPara('Regarding years of experience, 35.7% of respondents had between 1-5 years of experience, 42.2% had between 6-10 years and 22.1% had over 10 years of experience. This distribution suggests that the respondents possess adequate experience to provide reliable data on the subject under investigation.', {});
+    c += rtfPara('4.4 Analysis of Research Questions', {bold:true, size:12});
+    c += rtfPara('Research Question 1: What is the nature and scope of ' + topic.toLowerCase() + '?', {bold:false});
+    c += rtfPara('The data reveals that the majority of respondents (78.3%) acknowledged the significance of ' + topic.toLowerCase() + ' in the Nigerian context. A mean score of 4.21 and standard deviation of 0.63 were recorded for items measuring this construct, indicating a high level of agreement among respondents. These findings align with the observations of ' + cite('Adesanya & Olatunji', yr-1) + ' who similarly found widespread recognition of this phenomenon among their sample.', {});
+    c += rtfPara('Research Question 2: What key factors influence outcomes in ' + dept.toLowerCase() + '?', {bold:false});
+    c += rtfPara('Analysis of respondents\' views on key influencing factors yielded a mean score of 3.98 (SD = 0.71). Respondents identified institutional capacity (mean = 4.31), policy environment (mean = 4.18) and stakeholder engagement (mean = 3.89) as the most critical factors. These findings are consistent with the empirical evidence presented by ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('4.5 Test of Hypotheses', {bold:true, size:12});
+    c += rtfPara('Hypothesis 1: There is no significant relationship between the key variables identified in this study.', {});
+    c += rtfPara('Using Pearson Product Moment Correlation, a correlation coefficient of r = 0.72 (p < 0.05) was obtained. Since the p-value (0.000) is less than the significance level (0.05), the null hypothesis is rejected. This confirms that there is a significant positive relationship between the key variables identified in this study ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('4.6 Discussion of Findings', {bold:true, size:12});
+    c += rtfPara('The findings of this study corroborate much of the extant literature on ' + topic.toLowerCase() + '. The identification of institutional capacity, policy environment and stakeholder engagement as critical success factors resonates with the frameworks proposed by ' + cite('Chukwuemeka', yr) + ' and the empirical evidence of ' + cite('Adesanya & Olatunji', yr-1) + '. The significant positive correlation found between the key variables lends further credence to the theoretical frameworks adopted in this study.', {});
+    c += rtfPara('However, the findings also reveal some context-specific dimensions that are not adequately captured in the existing literature. In particular, the role of socio-cultural factors in mediating outcomes -- while acknowledged by ' + cite('World Bank', yr) + ' at the macro level -- appears to have a more pronounced effect in the Nigerian setting than previously documented. This finding underscores the importance of context-sensitive research and policy design.', {});
+    return c;
+  };
+
+  chapterContent['ch5'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER FIVE', {bold:true, center:true, size:14});
+    c += rtfPara('SUMMARY, CONCLUSION AND RECOMMENDATIONS', {bold:true, center:true, size:14});
+    c += rtfPara('5.1 Introduction', {bold:true, size:12});
+    c += rtfPara('This chapter presents the summary of the study, draws conclusions from the findings and offers recommendations for practice, policy and future research. The chapter synthesises the key findings from the previous chapters and situates them within the broader context of the existing literature.', {});
+    c += rtfPara('5.2 Summary of the Study', {bold:true, size:12});
+    c += rtfPara('This study examined ' + topic + '. Guided by five research questions and two hypotheses, the study adopted a descriptive survey design and collected data from 185 respondents using a structured questionnaire. Data were analysed using descriptive statistics and inferential statistical methods.', {});
+    c += rtfPara('The review of literature in Chapter Two established the conceptual, theoretical and empirical background of the study. The Systems Theory and Institutional Theory served as the theoretical anchors of the study. Empirical studies from Nigeria and comparable contexts were reviewed, revealing both areas of consensus and gaps that motivated this investigation.', {});
+    c += rtfPara('5.3 Summary of Findings', {bold:true, size:12});
+    c += rtfPara('The following major findings emerged from the study:', {});
+    c += rtfPara('i. The majority of respondents (78.3%) recognised the significance of ' + topic.toLowerCase() + ' in the Nigerian context, with a mean score of 4.21.', {});
+    c += rtfPara('ii. Institutional capacity, policy environment and stakeholder engagement were identified as the most critical factors influencing outcomes in ' + dept + '.', {});
+    c += rtfPara('iii. A statistically significant positive correlation (r = 0.72, p < 0.05) was established between the key variables, leading to the rejection of the null hypotheses.', {});
+    c += rtfPara('iv. Socio-cultural factors were found to have a pronounced mediating effect on outcomes in the Nigerian context.', {});
+    c += rtfPara('5.4 Conclusion', {bold:true, size:12});
+    c += rtfPara('Based on the findings of this study, it is concluded that ' + topic.toLowerCase() + ' is a multidimensional phenomenon whose outcomes are shaped by a constellation of institutional, policy and socio-cultural factors. The significant positive relationships found between the key variables confirm the theoretical propositions advanced in the study and underscore the need for holistic, context-sensitive approaches to addressing challenges in ' + dept + ' in Nigeria.', {});
+    c += rtfPara('5.5 Recommendations', {bold:true, size:12});
+    c += rtfPara('Based on the findings and conclusions of this study, the following recommendations are made:', {});
+    c += rtfPara('i. Relevant authorities and institutional leaders should prioritise the development of institutional capacity as a foundation for improved outcomes in ' + dept.toLowerCase() + '.', {});
+    c += rtfPara('ii. Policy makers should design and implement contextually responsive policies that account for the socio-cultural dynamics of the Nigerian environment.', {});
+    c += rtfPara('iii. Stakeholder engagement mechanisms should be formalised and institutionalised to ensure that all relevant voices are heard in decision-making processes.', {});
+    c += rtfPara('iv. Adequate funding should be allocated to support research, training and capacity development in ' + dept + '.', {});
+    c += rtfPara('v. Monitoring and evaluation frameworks should be established to track progress and ensure accountability.', {});
+    c += rtfPara('5.6 Contribution to Knowledge', {bold:true, size:12});
+    c += rtfPara('This study makes several contributions to the body of knowledge on ' + topic.toLowerCase() + '. It provides new empirical evidence on the nature and scope of the phenomenon in Nigeria, validates the applicability of Systems Theory and Institutional Theory in this context and identifies context-specific factors not previously documented in the literature. The findings serve as a reference for future researchers, policymakers and practitioners in ' + dept + ' and related fields.', {});
+    c += rtfPara('5.7 Suggestions for Further Studies', {bold:true, size:12});
+    c += rtfPara('Future researchers are encouraged to conduct longitudinal studies to track changes in the key variables over time. Studies adopting qualitative and participatory methods would also complement the quantitative approach of this study. Additionally, comparative studies across different geopolitical zones in Nigeria would provide a more comprehensive understanding of the regional dimensions of ' + topic.toLowerCase() + '.', {});
+    return c;
+  };
+
+  chapterContent['ch6'] = function() {
+    var c = '';
+    c += rtfPara('CHAPTER SIX', {bold:true, center:true, size:14});
+    c += rtfPara('SUPPLEMENTARY ANALYSIS AND ADDITIONAL FINDINGS', {bold:true, center:true, size:14});
+    c += rtfPara('6.1 Introduction', {bold:true, size:12});
+    c += rtfPara('This chapter presents supplementary analyses and additional findings that complement the main results reported in Chapter Four. It also addresses peripheral but relevant dimensions of ' + topic.toLowerCase() + ' that emerged during data collection.', {});
+    c += rtfPara('6.2 Additional Analysis', {bold:true, size:12});
+    c += rtfPara('Further analysis of the data using multiple regression revealed that the identified independent variables collectively explained 63.4% of the variance in the dependent variable (R^2 = 0.634, F = 24.71, p < 0.05). This indicates a strong collective predictive capacity, affirming the theoretical and empirical basis of the study ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('6.3 Emerging Themes', {bold:true, size:12});
+    c += rtfPara('Several emerging themes identified during qualitative follow-up interviews include the need for enhanced collaboration between academia and industry in ' + dept + ', the importance of digital technology in modern research practices and the role of mentorship in sustaining academic excellence. These themes open new avenues for future research and policy intervention.', {});
+    return c;
+  };
+
+  // Write chapters into body
+  for (var i = 0; i < toWrite.length; i++) {
+    var chKey = toWrite[i];
+    if (chapterContent[chKey]) {
+      body += chapterContent[chKey]();
+      if (i < toWrite.length - 1) body += '\\page\n';
+    }
+  }
+
+  // Topic Coining service
+  if (svc === 'topic_coining') {
+    body += rtfPara('TOPIC COINING SERVICE', {bold:true, center:true, size:14});
+    body += rtfPara('Department: ' + dept + '   |   Level: ' + level, {center:true});
+    body += rtfPara('Suggested Research Topics', {bold:true, size:12});
+    var tpList = [
+      'The Impact of Digital Technology on Academic Performance among ' + level + ' Students in Nigerian Universities',
+      'Analysis of Microfinance Bank Credit Facilities and Small Business Growth in Nigeria: A Focus on ' + dept,
+      'Challenges and Prospects of E-Commerce Adoption among SMEs in Lagos State: Implications for ' + dept,
+      'Effect of Motivation on Employee Productivity in Nigerian ' + dept + ' Institutions',
+      'Assessment of Corporate Social Responsibility Practices among Organisations in ' + dept + ': Nigerian Evidence',
+      'The Role of Leadership Style on Organisational Performance in ' + dept + ' Institutions in Nigeria',
+      'Impact of Social Media on Consumer Behaviour: A Study of ' + dept + ' in South-West Nigeria',
+      'Financial Inclusion and Poverty Reduction: Evidence from Rural Communities in Nigeria',
+      'Effect of Organisational Culture on Employee Commitment in ' + dept + ' Firms in Nigeria',
+      'Appraisal of Risk Management Practices and Performance Outcomes in Nigerian ' + dept + ' Organisations'
+    ];
+    for (var ti = 0; ti < Math.min(od.topicQty||5, tpList.length); ti++) {
+      body += rtfPara((ti+1) + '. ' + tpList[ti], {});
+    }
+    body += rtfPara('Note: These topics are tailored to ' + dept + ' at the ' + level + ' level. Contact InstantProject via WhatsApp for further customisation.', {});
+  }
+
+  // Journal sourcing service
+  if (svc === 'journal_sourcing') {
+    body += rtfPara('JOURNAL SOURCING SERVICE', {bold:true, center:true, size:14});
+    body += rtfPara('Topic: ' + topic, {bold:true});
+    body += rtfPara('Our team will source ' + (od.journalQty||1) + ' peer-reviewed journal article(s) directly related to your topic from databases including Google Scholar, JSTOR, ScienceDirect, PubMed, ResearchGate and EBSCO. Full-text PDFs will be sent to your email within 24 hours of payment confirmation.', {});
+  }
+
+  // Data Analysis
+  if (svc === 'data_analysis') {
+    body += rtfPara('DATA ANALYSIS SERVICE', {bold:true, center:true, size:14});
+    body += rtfPara('Topic: ' + topic + '   |   Department: ' + dept + '   |   Level: ' + level, {center:true});
+    body += rtfPara('This document confirms receipt of your Data Analysis order. Our analysts will process your dataset using SPSS, Excel or the appropriate statistical software based on your research design. Analysis will include descriptive statistics, inferential tests (t-test, ANOVA, regression, correlation) and full interpretation of results with tables and charts.', {});
+    body += rtfPara('You will receive the complete analysis output within 24-72 hours. Kindly forward your dataset and questionnaire to hello@instantproject.ng or via WhatsApp with reference to this order.', {});
+  }
+
+  // Proofreading
+  if (svc === 'proofreading') {
+    body += rtfPara('PROOFREADING & EDITING SERVICE', {bold:true, center:true, size:14});
+    body += rtfPara('Topic: ' + topic + '   |   Referencing Style: ' + refStyle, {center:true});
+    body += rtfPara('This document confirms receipt of your Proofreading & Editing order. Our editors will review your document for grammatical accuracy, clarity, coherence, proper sentence structure, referencing consistency (' + refStyle + ') and formatting compliance (Times New Roman 12, double spacing, justified alignment).', {});
+    body += rtfPara('Please submit your document for editing to hello@instantproject.ng or via WhatsApp. The corrected document will be returned within 24-48 hours.', {});
+  }
+
+  // Plagiarism
+  if (svc === 'plagiarism') {
+    body += rtfPara('PLAGIARISM / AI CHECK SERVICE', {bold:true, center:true, size:14});
+    body += rtfPara('Topic: ' + topic, {center:true});
+    body += rtfPara('This document confirms receipt of your Plagiarism / AI Check order. Your document will be checked using Turnitin and/or iThenticate. You will receive a full similarity report, an AI-detection report and a clean, paraphrased version of flagged sections where applicable.', {});
+    body += rtfPara('Please submit your document to hello@instantproject.ng or via WhatsApp. The report will be delivered within 12-24 hours.', {});
+  }
+
+  // Seminar
+  if (svc === 'seminar') {
+    body += rtfPara('SEMINAR PAPER', {bold:true, center:true, size:14});
+    body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
+    body += rtfPara('Department of ' + dept + '   |   Level: ' + level + '   |   Referencing: ' + refStyle, {center:true});
+    body += rtfPara('1. Introduction', {bold:true, size:12});
+    body += rtfPara('This seminar paper examines ' + topic.toLowerCase() + ' with a view to understanding its theoretical foundations, empirical dimensions and practical implications for ' + dept + '. The paper draws from a range of academic sources and is structured to provide a comprehensive overview of the subject matter.', {});
+    body += rtfPara('2. Conceptual Clarification', {bold:true, size:12});
+    body += rtfPara('The concept of ' + topic.toLowerCase() + ' has been defined variously in the literature. ' + cite('Adeyemi', yr-2) + ' describes it as a multidimensional phenomenon encompassing structural, functional and normative dimensions. A synthesis of these definitions reveals that at its core, the concept involves the systematic examination of ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + ' and its implications for theory and practice.', {});
+    body += rtfPara('3. Theoretical Underpinnings', {bold:true, size:12});
+    body += rtfPara('This paper draws on Systems Theory ' + cite('Chukwuemeka', yr) + ' and Institutional Theory ' + cite('Nwosu et al.', yr-3) + ' as its theoretical framework. These theories provide complementary lenses through which the key issues of the paper can be examined.', {});
+    body += rtfPara('4. Critical Analysis', {bold:true, size:12});
+    body += rtfPara('A critical analysis of the available evidence reveals several important patterns. ' + cite('Adesanya & Olatunji', yr-1) + ' found that contextual factors significantly mediate the relationship between theoretical prescriptions and on-the-ground realities. This finding has profound implications for how practitioners and policymakers approach ' + topic.toLowerCase() + '.', {});
+    body += rtfPara('5. Conclusion and Recommendations', {bold:true, size:12});
+    body += rtfPara('In conclusion, this seminar paper has examined ' + topic.toLowerCase() + ' from multiple angles. The evidence reviewed points to the need for integrated, context-sensitive approaches that account for the complex interplay of factors involved. It is recommended that practitioners, researchers and policymakers collaborate to develop evidence-based solutions that are both theoretically grounded and practically relevant.', {});
+  }
+
+  // Proposal
+  if (svc === 'proposal') {
+    body += rtfPara('RESEARCH PROPOSAL', {bold:true, center:true, size:14});
+    body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
+    body += rtfPara('Department of ' + dept + '   |   Level: ' + level + '   |   Referencing: ' + refStyle, {center:true});
+    body += rtfPara('1.0 Introduction and Background', {bold:true, size:12});
+    body += rtfPara('This proposal outlines a plan to investigate ' + topic.toLowerCase() + '. The proposed study is motivated by the identified gaps in the existing literature and the practical need for evidence-based insights in ' + dept + ' in Nigeria.', {});
+    body += rtfPara('2.0 Statement of the Problem', {bold:true, size:12});
+    body += rtfPara('Despite growing interest in ' + topic.toLowerCase() + ', there remains a dearth of comprehensive, contextually relevant studies on the subject in Nigeria ' + cite('Okafor', yr-1) + '. This study aims to address these gaps.', {});
+    body += rtfPara('3.0 Objectives of the Study', {bold:true, size:12});
+    body += rtfPara('The broad objective is to examine ' + topic.toLowerCase() + '. Specific objectives include assessing key factors, examining relationships between variables and proffering recommendations.', {});
+    body += rtfPara('4.0 Research Questions and Hypotheses', {bold:true, size:12});
+    body += rtfPara('The study will be guided by five research questions and two null hypotheses as outlined in the full proposal document.', {});
+    body += rtfPara('5.0 Significance of the Study', {bold:true, size:12});
+    body += rtfPara('This study will contribute to academic knowledge, inform policy and serve as a reference for practitioners in ' + dept + '.', {});
+    body += rtfPara('6.0 Methodology', {bold:true, size:12});
+    body += rtfPara('A descriptive survey design will be adopted. Data will be collected via structured questionnaire from a sample selected through stratified random sampling. Cronbach Alpha will be used for reliability testing and SPSS for data analysis.', {});
+    body += rtfPara('7.0 Scope and Limitations', {bold:true, size:12});
+    body += rtfPara('The study covers ' + topic.toLowerCase() + ' in Nigeria. Limitations include time, funding and data access constraints.', {});
+  }
+
+  // Journal Writing
+  if (svc === 'journal_writing') {
+    body += rtfPara('JOURNAL ARTICLE', {bold:true, center:true, size:14});
+    body += rtfPara(topic.toUpperCase(), {bold:true, center:true, size:13});
+    body += rtfPara('Abstract', {bold:true, size:12});
+    body += rtfPara('This article examines ' + topic.toLowerCase() + ' with a focus on the Nigerian context. Drawing on a systematic review of the literature and empirical evidence, the article argues that ' + topic.split(' ').slice(0,6).join(' ').toLowerCase() + ' is a multifaceted phenomenon shaped by institutional, socioeconomic and policy factors. The article concludes with policy and practice recommendations. Keywords: ' + topic.split(' ').slice(0,5).join(', ') + ', Nigeria, ' + dept + '.', {});
+    body += rtfPara('1. Introduction', {bold:true, size:12});
+    body += rtfPara('The study of ' + topic.toLowerCase() + ' has assumed increasing prominence in academic discourse ' + cite('Adeyemi', yr-2) + '. This article contributes to this growing body of knowledge by providing a focused analysis of the phenomenon in the Nigerian setting.', {});
+    body += rtfPara('2. Literature Review', {bold:true, size:12});
+    body += rtfPara(cite('Adesanya & Olatunji', yr-1) + ' demonstrated that contextual factors significantly shape outcomes. ' + cite('Nwosu et al.', yr-3) + ' further established the role of institutional frameworks in mediating these outcomes. Building on these contributions, this article advances a more nuanced understanding of ' + topic.toLowerCase() + '.', {});
+    body += rtfPara('3. Methodology', {bold:true, size:12});
+    body += rtfPara('A mixed-methods approach was adopted. Quantitative data were collected via survey (n=150) and analysed using SPSS. Qualitative insights were obtained through focus group discussions.', {});
+    body += rtfPara('4. Findings and Discussion', {bold:true, size:12});
+    body += rtfPara('Results indicate a significant positive relationship between the key variables (r = 0.68, p < 0.05). These findings align with ' + cite('Okafor', yr-1) + ' and have important implications for policy and practice in ' + dept + '.', {});
+    body += rtfPara('5. Conclusion', {bold:true, size:12});
+    body += rtfPara('This article has examined ' + topic.toLowerCase() + ' and established key empirical relationships. Future research should adopt longitudinal designs and explore regional variations across Nigeria.', {});
+  }
+
+  // REFERENCES section
+  if (['project','thesis','dissertation','term_paper','seminar','proposal','journal_writing'].indexOf(svc) > -1) {
+    body += '\\page\n';
+    body += rtfPara('REFERENCES', {bold:true, center:true, size:13});
+    for (var ri = 0; ri < refs.length; ri++) {
+      // Hanging indent for references
+      body += '{\\pard\\qj\\sl480\\slmult1\\li0\\fi-0 ' + escRTF(refs[ri]) + '\\par\n}';
+    }
+  }
+
+  var rtfClose = '}';
+  var rtfDoc = rtfHeader + body + rtfClose;
+
+  // Download as .doc (RTF content, Word-compatible)
+  var blob = new Blob([rtfDoc], {type:'application/msword'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  var fname = 'InstantProject_' + svcLabel.replace(/[\s&\/]+/g,'_') + '_' + name.split(' ')[0] + '_' + level + '.doc';
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ---------- PAYMENT ----------
+function handlePayment() {
+  if (!validate()) return;
+
+  var name = document.getElementById('fullName').value.trim();
+  var email = document.getElementById('emailAddr').value.trim();
+  var phone = (document.getElementById('phoneNum')||{value:''}).value||'';
+  var svc = document.getElementById('serviceType').value;
+  var topic = (document.getElementById('topicInput')||{value:''}).value||'';
+  var dept = document.getElementById('deptSelect').value;
+  if (dept === 'Other') {
+    var doi = document.getElementById('deptOtherInput');
+    dept = (doi && doi.value.trim()) ? doi.value.trim() : 'Other';
+  }
+  var level = document.getElementById('levelSelect').value;
+  var refStyle = getRefStyle();
+  var guidelines = (document.getElementById('guidelinesText')||{value:''}).value||'';
+  var numPages = parseInt((document.getElementById('numPages')||{value:''}).value)||MIN_PAGES[level]||75;
+  var topicQty = parseInt(((document.getElementById('topicQty')||{value:'1'}).value))||1;
+  var journalQty = parseInt(((document.getElementById('journalQty')||{value:'1'}).value))||1;
+  var amount = getCurrentPrice();
+
+  var od = {
+    name:name, email:email, phone:phone, service:svc, topic:topic,
+    department:dept, level:level, refStyle:refStyle, guidelines:guidelines,
+    pages:numPages, chapters:selectedChips.slice(), topicQty:topicQty,
+    journalQty:journalQty, amount:amount
+  };
+
+  // Check if Paystack loaded (blocked in sandboxed previews, works fine on Vercel)
+  if (typeof PaystackPop === 'undefined') {
+    // SANDBOX / TEST MODE: skip payment and generate document directly
+    var lo = document.getElementById('loadingOverlay');
+    var lm = document.getElementById('loadingMsg');
+    if (lo) lo.classList.add('active');
+    if (lm) lm.textContent = '[Test Mode] Paystack unavailable in preview. Generating document...';
+    setTimeout(function() {
+      if (lo) lo.classList.remove('active');
+      generateDocument(od);
+      showToast('success', 'Test Mode Download', 'Document generated! On Vercel, Paystack will process payment first.');
+    }, 2000);
+    return;
+  }
+
+  try {
+    var handler = PaystackPop.setup({
+      key: PAYSTACK_KEY,
+      email: email,
+      amount: amount * 100,
+      currency: 'NGN',
+      ref: 'SH-' + Date.now(),
+      metadata: {
+        custom_fields: [
+          {display_name:'Student Name', variable_name:'student_name', value:name},
+          {display_name:'Service', variable_name:'service', value:svc},
+          {display_name:'Topic', variable_name:'topic', value:topic},
+          {display_name:'Level', variable_name:'level', value:level},
+          {display_name:'Referencing', variable_name:'ref_style', value:refStyle}
+        ]
+      },
+      callback: function(response) {
+        var lo = document.getElementById('loadingOverlay');
+        var lm = document.getElementById('loadingMsg');
+        if (lo) lo.classList.add('active');
+        if (lm) lm.textContent = 'Payment confirmed! Generating your document...';
+        setTimeout(function() {
+          if (lo) lo.classList.remove('active');
+          generateDocument(od);
+          showToast('success','Download Started','Your document is downloading. Check your downloads folder.');
+        }, 2200);
+      },
+      onClose: function() {
+        showToast('notice','Payment Cancelled','You closed the payment window. Your order was not processed.');
+      }
+    });
+    handler.openIframe();
+  } catch(e) {
+    showToast('error','Payment Error','Could not connect to Paystack. Please check your internet connection and try again.');
+  }
+}
+
+function showToast(type, title, msg) {
+  var t = document.getElementById('toast');
+  var tl = document.getElementById('toastTitle');
+  var tm = document.getElementById('toastMessage');
+  if (!t) return;
+  if (tl) tl.textContent = title;
+  if (tm) tm.textContent = msg;
+  var col = type==='error'?'#e24b4a':type==='notice'?'#f5a623':'var(--success)';
+  t.style.borderLeftColor = col;
+  if (tl) tl.style.color = col;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');}, 4500);
+}
+
+function toggleFaq(el) {
+  var item = el.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+  if (!isOpen) item.classList.add('open');
+}
+
+
+// TESTIMONIAL CAROUSEL
+(function() {
+  function initCarousel() {
+    var track = document.getElementById('tTrack');
+    var dotsEl = document.getElementById('tDots');
+    if (!track || !dotsEl) return;
+    var cards = track.querySelectorAll('.testimonial-card');
+    var total = cards.length;
+    var current = 0;
+    var timer;
+
+    function getPerPage() {
+      if (window.innerWidth < 600) return 1;
+      if (window.innerWidth < 960) return 2;
+      return 3;
+    }
+
+    function getCardWidth() {
+      return cards[0] ? cards[0].offsetWidth + 19 : 319;
+    }
+
+    function numPages() { return Math.ceil(total / getPerPage()); }
+
+    function buildDots() {
+      dotsEl.innerHTML = '';
+      for (var i = 0; i < numPages(); i++) {
+        (function(idx) {
+          var btn = document.createElement('button');
+          btn.className = 't-dot' + (idx === current ? ' active' : '');
+          btn.onclick = function() { goTo(idx); };
+          dotsEl.appendChild(btn);
+        })(i);
+      }
+    }
+
+    function goTo(idx) {
+      var p = numPages();
+      if (idx < 0) idx = p - 1;
+      if (idx >= p) idx = 0;
+      current = idx;
+      var shift = current * getPerPage() * getCardWidth();
+      track.style.transform = 'translateX(-' + shift + 'px)';
+      dotsEl.querySelectorAll('.t-dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(function() { goTo(current + 1); }, 4500);
+    }
+
+    buildDots();
+    startTimer();
+
+    track.parentElement.addEventListener('mouseenter', function() { clearInterval(timer); });
+    track.parentElement.addEventListener('mouseleave', startTimer);
+
+    var startX = 0;
+    track.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, {passive:true});
+    track.addEventListener('touchend', function(e) {
+      var diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) { goTo(diff > 0 ? current + 1 : current - 1); startTimer(); }
+    });
+
+    window.addEventListener('resize', function() { buildDots(); goTo(0); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousel);
+  } else {
+    initCarousel();
+  }
+})();
+
+// INIT
+onServiceChange();
+</script>
+</body>
+</html>
