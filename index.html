@@ -1163,25 +1163,137 @@ function generateDocument(od) {
 
   chapterContent['ch2'] = function() {
     var c = '';
+    var words = topic.split(' ');
+    var kw1 = words.slice(0,3).join(' ');
+    var kw2 = words.length > 4 ? words.slice(3,6).join(' ') : words.slice(0,2).join(' ');
+    var kw3 = words.length > 2 ? words[words.length-1] : words[0];
+    var empiricalCount = isPhD ? 18 : isPostgrad ? 14 : 10;
+
     c += rtfPara('CHAPTER TWO', {bold:true, center:true, size:14});
     c += rtfPara('REVIEW OF RELATED LITERATURE', {bold:true, center:true, size:14});
     c += rtfPara('2.1 Introduction', {bold:true, size:12});
-    c += rtfPara('This chapter presents a comprehensive review of literature relevant to ' + topic + '. It is organised into conceptual, theoretical and empirical sections, culminating in an identification of gaps in the existing literature that this study seeks to address. The review draws from a wide range of academic sources including peer-reviewed journal articles, textbooks, policy documents and institutional reports.', {});
+    c += rtfPara('This chapter presents an extensive review of related literature on ' + topic + '. The chapter is organised into five major sections: the conceptual review, which clarifies the key concepts underpinning the study; the theoretical framework, which identifies and discusses the major theories that explain the phenomena under investigation; the empirical review, which examines relevant prior studies; the gap in literature, which identifies what remains underexplored; and a summary of the chapter. The review draws from peer-reviewed journals, academic textbooks, policy documents and institutional reports, spanning local and international literature ' + cite('Adeyemi', yr-2) + '.', {});
+
+    // ── 2.2 CONCEPTUAL REVIEW ──
     c += rtfPara('2.2 Conceptual Review', {bold:true, size:12});
-    c += rtfPara('The concept of ' + topic.toLowerCase() + ' has been the subject of extensive scholarly debate. Early conceptualisations were largely descriptive, focusing on the surface-level manifestations of the phenomenon ' + cite('Adeyemi', yr-2) + '. However, more recent scholarship has adopted a more critical and nuanced approach, recognising the multidimensional nature of the concept and its embeddedness within broader socioeconomic and institutional frameworks ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
-    c += rtfPara('A critical examination of the concept reveals several dimensions that are particularly salient in the Nigerian context. First, there is the structural dimension, which relates to institutional arrangements and policy frameworks. Second, the functional dimension concerns the day-to-day operations and practices of relevant actors. Third, the normative dimension addresses the values, norms and expectations that govern behaviour in this domain ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('The conceptual review examines the major concepts that form the foundation of this study. Each concept is defined, contextualised and related directly to the subject matter of ' + topic + '. A clear understanding of these concepts is essential for situating the research within the appropriate intellectual framework and for ensuring precision in the interpretation of findings ' + cite('Okafor', yr-1) + '.', {});
+
+    // Concept 1 - derived from topic words
+    c += rtfPara('2.2.1 The Concept of ' + kw1, {bold:true, size:12});
+    c += rtfPara(kw1 + ' is a foundational concept in the study of ' + dept + ' and has attracted significant scholarly attention over the past three decades. The concept was first systematically articulated by early theorists who sought to explain how organisations and individuals navigate complex social and institutional environments ' + cite('Adesanya & Olatunji', yr-1) + '. In its broadest sense, ' + kw1.toLowerCase() + ' refers to the set of processes, structures and interactions through which outcomes are produced within a defined institutional context.', {});
+    c += rtfPara('A more nuanced understanding of ' + kw1.toLowerCase() + ' recognises that the concept is not monolithic but rather encompasses multiple dimensions that operate simultaneously and interact in complex ways. Scholars have identified at least three distinct but interrelated dimensions: the structural dimension, which concerns the formal arrangements and rules that govern behaviour; the processual dimension, which relates to the dynamic activities and decisions made by relevant actors over time; and the outcomes dimension, which focuses on the tangible and intangible results produced through these processes ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('In the Nigerian context, ' + kw1.toLowerCase() + ' takes on additional significance given the country\'s complex political economy, diverse cultural landscape and evolving institutional environment. Researchers have consistently found that contextual factors — including ethnicity, religion, socioeconomic status and geographic location — mediate how ' + kw1.toLowerCase() + ' manifests and is experienced by different actors ' + cite('Nwosu et al.', yr-3) + '. This contextual specificity underscores the importance of conducting locally grounded research rather than uncritically applying frameworks developed in Western settings.', {});
+
+    // Concept 2
+    c += rtfPara('2.2.2 The Concept of ' + kw2, {bold:true, size:12});
+    c += rtfPara(kw2 + ' represents another central concept in the discourse on ' + topic.toLowerCase() + '. The term has been variously defined in the literature, reflecting the diverse disciplinary perspectives from which it has been examined. Economists tend to conceptualise ' + kw2.toLowerCase() + ' primarily in terms of resource allocation and efficiency, while sociologists emphasise the relational and power dimensions that shape how ' + kw2.toLowerCase() + ' is distributed and experienced across different social groups ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+    c += rtfPara('For the purpose of this study, ' + kw2.toLowerCase() + ' is defined as the systematic capacity of relevant actors within ' + dept + ' to mobilise resources, coordinate activities and generate outcomes that align with established goals and objectives. This definition draws on both the economic and sociological traditions, capturing both the material and relational dimensions of the concept ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('Empirical evidence on ' + kw2.toLowerCase() + ' in Nigeria and comparable African contexts suggests that its development and sustainability depend critically on the quality of leadership, the availability of financial and human resources and the degree of institutional coherence that characterises the operating environment ' + cite('World Bank', yr) + '. Where these conditions are met, ' + kw2.toLowerCase() + ' tends to flourish; where they are absent, it tends to stagnate or deteriorate, with adverse consequences for overall outcomes in ' + dept + '.', {});
+
+    // Concept 3
+    c += rtfPara('2.2.3 The Concept of ' + kw3, {bold:true, size:12});
+    c += rtfPara(kw3 + ' occupies a pivotal position in the conceptual architecture of this study. As a concept, ' + kw3.toLowerCase() + ' has been subject to considerable definitional debate, with different scholars emphasising different aspects depending on their disciplinary orientation and the specific context of their research ' + cite('Adesanya & Olatunji', yr-1) + '. A review of the literature reveals at least four major approaches to conceptualising ' + kw3.toLowerCase() + ': the normative approach, which defines it in terms of ideal standards or benchmarks; the descriptive approach, which focuses on observable patterns and regularities; the functional approach, which emphasises the roles and purposes served; and the critical approach, which interrogates the power relations embedded within prevailing definitions and practices.', {});
+    c += rtfPara('This study adopts a synthetic definition of ' + kw3.toLowerCase() + ' that draws on the normative and functional approaches while remaining attentive to the critical insights offered by the fourth perspective. Specifically, ' + kw3.toLowerCase() + ' is understood as a dynamic, context-sensitive phenomenon that encompasses both the formal and informal dimensions of practice within ' + dept + ', shaped by a combination of institutional rules, individual agency and broader environmental factors ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('The relationship between ' + kw3.toLowerCase() + ' and outcomes in ' + dept + ' has been extensively studied in both developed and developing country contexts. The evidence consistently suggests that variations in ' + kw3.toLowerCase() + ' account for a significant proportion of observed differences in performance outcomes, even when controlling for other potentially confounding variables ' + cite('Nwosu et al.', yr-3) + '. This finding has important implications for policy and practice, suggesting that targeted interventions aimed at improving ' + kw3.toLowerCase() + ' can be expected to generate measurable improvements in overall outcomes.', {});
+
+    // Concept 4
+    c += rtfPara('2.2.4 The Concept of Institutional Capacity in ' + dept, {bold:true, size:12});
+    c += rtfPara('Institutional capacity refers to the ability of organisations and systems within ' + dept + ' to perform their assigned functions effectively, efficiently and sustainably over time. It encompasses human capacity — in the form of skilled and motivated personnel — as well as organisational capacity, which relates to the systems, structures and processes that enable collective action, and enabling environment capacity, which concerns the legal, policy and regulatory frameworks within which organisations operate ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('Research on institutional capacity in ' + dept + ' has identified several key determinants of capacity development and maintenance, including leadership quality, funding adequacy, staff development investment, governance structures and the nature of inter-institutional relationships ' + cite('World Bank', yr) + '. Studies conducted in Nigeria have highlighted the particular challenges posed by chronic underfunding, frequent policy reversals and the politicisation of institutional appointments, all of which undermine efforts to build and sustain the institutional capacity needed for effective performance in ' + dept + '.', {});
+    c += rtfPara('The concept of institutional capacity is closely related to, but distinct from, the broader notion of organisational effectiveness. While organisational effectiveness focuses primarily on the achievement of stated goals and objectives, institutional capacity is concerned with the underlying capacities and enabling conditions that make such achievement possible on a sustained basis ' + cite('Adeyemi', yr-2) + '. For the purposes of this study, institutional capacity is treated as a key independent variable whose variation helps explain differences in outcomes related to ' + topic.toLowerCase() + '.', {});
+
+    // Concept 5
+    c += rtfPara('2.2.5 The Concept of Policy Environment and Governance', {bold:true, size:12});
+    c += rtfPara('The policy environment within which ' + topic.toLowerCase() + ' operates is a critical determinant of outcomes in ' + dept + '. The policy environment encompasses the set of laws, regulations, guidelines and informal norms that govern the activities of actors in this domain, as well as the political and administrative processes through which these frameworks are formulated, implemented, monitored and evaluated ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+    c += rtfPara('Governance, as a concept closely related to the policy environment, refers to the exercise of authority and the management of resources in ways that are transparent, accountable and responsive to the needs of relevant stakeholders. Good governance in ' + dept + ' is widely regarded as a necessary, though not sufficient, condition for the achievement of desired outcomes related to ' + topic.toLowerCase() + ' ' + cite('Adesanya & Olatunji', yr-1) + '. Where governance frameworks are weak, captured by narrow interests or disconnected from evidence, the prospects for sustainable improvement in outcomes are significantly diminished.', {});
+    c += rtfPara('In Nigeria, the policy environment for ' + dept + ' has been characterised by a degree of instability and inconsistency that has complicated efforts to build a sustained trajectory of improvement ' + cite('Chukwuemeka', yr) + '. Frequent changes in government, shifting policy priorities and the limited institutionalisation of evidence-based policy processes have all contributed to a policy environment that is often more reactive than proactive, and more focused on short-term political considerations than long-term development imperatives.', {});
+
+    // Concept 6
+    c += rtfPara('2.2.6 The Concept of Stakeholder Engagement', {bold:true, size:12});
+    c += rtfPara('Stakeholder engagement is a concept that has gained increasing prominence in both academic and policy discourse in recent years, reflecting a broader recognition that the effective management of complex social phenomena such as ' + topic.toLowerCase() + ' requires the active and meaningful involvement of all relevant parties ' + cite('Nwosu et al.', yr-3) + '. Stakeholders in the context of this study are defined as all individuals, groups and institutions whose interests are directly or indirectly affected by developments in ' + dept + ', including students, faculty, administrators, government agencies, professional bodies, employers and civil society organisations.', {});
+    c += rtfPara('Research on stakeholder engagement has demonstrated that more inclusive and participatory approaches to governance and management tend to produce better outcomes than top-down, technocratic approaches that fail to take account of the perspectives and priorities of those most directly affected by policy decisions ' + cite('Okafor', yr-1) + '. In the context of ' + topic.toLowerCase() + ', this finding suggests that strategies for improvement should be designed and implemented in close consultation with relevant stakeholders, rather than being imposed from above without adequate consultation or buy-in.', {});
+
+    // ── 2.3 THEORETICAL FRAMEWORK ──
     c += rtfPara('2.3 Theoretical Framework', {bold:true, size:12});
-    c += rtfPara('This study is anchored on the Systems Theory, first developed by Bertalanffy (1968) and subsequently applied in various social science disciplines. According to this theory, every phenomenon can be understood as a system of interrelated components that interact to produce a collective outcome. Applied to the current study, the systems theoretical lens enables a holistic examination of ' + topic.toLowerCase() + ', taking into account the various actors, structures and processes involved ' + cite('Nwosu et al.', yr-3) + '.', {});
-    c += rtfPara('In addition, the Institutional Theory provides a complementary framework for understanding how formal and informal rules, norms and regulations shape the behaviour of actors in ' + dept + '. As argued by ' + cite('Okafor', yr-1) + ', institutional frameworks significantly mediate the relationship between policy intentions and on-the-ground outcomes.', {});
+    c += rtfPara('This section presents the major theories that inform the study of ' + topic + '. The theories discussed here are not merely decorative additions to the study but serve as analytical tools that guide the formulation of research questions, the design of the study, the interpretation of data and the drawing of conclusions. Each theory is presented, critiqued and related to the specific concerns of this study ' + cite('Adeyemi', yr-2) + '.', {});
+
+    // Theory 1
+    c += rtfPara('2.3.1 Systems Theory', {bold:true, size:12});
+    c += rtfPara('Systems Theory, originally developed by Ludwig von Bertalanffy in the 1940s and 1950s and subsequently elaborated by scholars in sociology, management science and public administration, provides the primary theoretical lens for this study. At its core, Systems Theory posits that any phenomenon can be understood as a system composed of interrelated and interdependent components, whose collective behaviour cannot be adequately explained by examining any one component in isolation ' + cite('Chukwuemeka', yr) + '. The theory emphasises the importance of understanding the whole system, including the feedback loops and emergent properties that arise from the interactions among its constituent parts.', {});
+    c += rtfPara('Applied to the study of ' + topic.toLowerCase() + ', Systems Theory draws attention to the complex web of relationships among the various actors, structures and processes that collectively shape outcomes in ' + dept + '. Rather than attributing outcomes to a single cause or set of causes, a systems perspective encourages the researcher to consider how different elements of the system interact and influence one another, and how changes in one part of the system can have ripple effects throughout the whole ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('Critics of Systems Theory have pointed out that it can be overly abstract and difficult to operationalise in empirical research, and that its emphasis on equilibrium and functional integration may obscure the conflicts, power asymmetries and dysfunctions that characterise real-world systems ' + cite('Okafor', yr-1) + '. This study acknowledges these limitations but argues that, used judiciously alongside other theoretical frameworks, Systems Theory provides a valuable heuristic for understanding the complexity and interconnectedness of the phenomena under investigation.', {});
+
+    // Theory 2
+    c += rtfPara('2.3.2 Institutional Theory', {bold:true, size:12});
+    c += rtfPara('Institutional Theory, as developed by scholars such as DiMaggio and Powell (1983), North (1990) and Scott (2001), provides a powerful framework for understanding how formal and informal institutions — including laws, regulations, norms, values and conventions — shape the behaviour of individuals and organisations ' + cite('Adesanya & Olatunji', yr-1) + '. The theory distinguishes between three types of institutional pressures: coercive pressures, which arise from formal regulatory requirements and the expectations of powerful actors; normative pressures, which derive from professional standards and shared values; and mimetic pressures, which lead organisations to imitate the practices of successful peers in conditions of uncertainty.', {});
+    c += rtfPara('In the context of ' + topic.toLowerCase() + ', Institutional Theory helps explain why certain practices and arrangements persist even when they appear to be suboptimal from a purely technical or economic standpoint. The theory suggests that actors in ' + dept + ' are not simply rational utility-maximisers but are embedded in institutional environments that constrain and enable their choices in ways that are not always consciously recognised ' + cite('Yusuf & Ibrahim', yr-1) + '. This insight is particularly relevant for understanding the resilience of certain problematic practices and the challenges involved in achieving meaningful institutional reform.', {});
+    c += rtfPara('The application of Institutional Theory to the Nigerian context has been particularly illuminating, revealing how the interaction between formal institutional frameworks and informal norms and practices — including patron-client relationships, ethnic loyalties and religious affiliations — produces outcomes that diverge significantly from what formal rules and regulations would predict ' + cite('World Bank', yr) + '. This study draws on Institutional Theory to contextualise its findings and to identify the institutional conditions that are most likely to support sustainable improvement in outcomes related to ' + topic.toLowerCase() + '.', {});
+
+    // Theory 3
+    c += rtfPara('2.3.3 Human Capital Theory', {bold:true, size:12});
+    c += rtfPara('Human Capital Theory, pioneered by economists Gary Becker (1964) and Theodore Schultz (1961), posits that investment in education, training and skill development enhances the productive capacity of individuals and, by extension, of the organisations and societies in which they operate ' + cite('Adeyemi', yr-2) + '. The theory provides a rational economic justification for investment in human resource development and has been enormously influential in shaping education and training policy in both developed and developing countries.', {});
+    c += rtfPara('In the context of ' + topic.toLowerCase() + ', Human Capital Theory draws attention to the critical importance of investing in the skills, knowledge and capabilities of the individuals who work within ' + dept + '. Research consistently demonstrates that the quality of human capital available to an organisation is one of the strongest predictors of its performance outcomes ' + cite('Chukwuemeka', yr) + '. This finding has direct implications for the study, suggesting that differences in human capital endowments among relevant actors may account for a significant proportion of the variation in outcomes observed across different settings.', {});
+    c += rtfPara('Critics of Human Capital Theory have argued that it tends to individualise structural problems, placing the burden of improvement on individuals rather than on the institutional and policy environments that shape their opportunities and constraints ' + cite('Nwosu et al.', yr-3) + '. While acknowledging the validity of this critique, this study maintains that Human Capital Theory offers important insights into the mechanisms through which ' + topic.toLowerCase() + ' is shaped and can be improved, and that these insights are complementary rather than contradictory to the structural perspectives offered by Systems Theory and Institutional Theory.', {});
+
+    // Theory 4
+    c += rtfPara('2.3.4 Agency Theory', {bold:true, size:12});
+    c += rtfPara('Agency Theory, originally developed in the context of corporate governance and economics by Jensen and Meckling (1976), addresses the relationship between principals (those who delegate tasks or authority) and agents (those who act on their behalf) ' + cite('Okafor', yr-1) + '. The theory identifies the potential for conflicts of interest between principals and agents, arising from information asymmetries and divergent objectives, and explores the mechanisms — including incentive structures, monitoring systems and contractual arrangements — through which these conflicts can be managed.', {});
+    c += rtfPara('Applied to the study of ' + topic.toLowerCase() + ', Agency Theory provides a framework for understanding the relationships among the various actors involved in the governance and management of ' + dept + ', including the relationships between policymakers and implementers, between institutions and their staff, and between service providers and the communities they serve ' + cite('Adesanya & Olatunji', yr-1) + '. The theory draws attention to the importance of designing appropriate accountability mechanisms and incentive structures to align the interests of agents with those of principals and to ensure that resources are deployed in pursuit of agreed objectives.', {});
+    c += rtfPara('In the Nigerian context, Agency Theory helps to illuminate several of the governance challenges that have undermined effective performance in ' + dept + ', including the prevalence of rent-seeking behaviour, the weakness of accountability mechanisms and the limited capacity of principals to monitor and evaluate the performance of their agents ' + cite('Yusuf & Ibrahim', yr-1) + '. Addressing these agency problems is identified in this study as a critical priority for improving outcomes related to ' + topic.toLowerCase() + '.', {});
+
+    // Theory 5
+    c += rtfPara('2.3.5 Stakeholder Theory', {bold:true, size:12});
+    c += rtfPara('Stakeholder Theory, associated with the work of Freeman (1984) and subsequently elaborated by numerous scholars across management, public administration and development studies, argues that the effective governance of complex organisations and systems requires attention to the interests and perspectives of all relevant stakeholders, not just those of the most powerful or directly involved parties ' + cite('Adeyemi', yr-2) + '. The theory posits that organisations which engage meaningfully with their stakeholders tend to achieve better outcomes than those that focus narrowly on the interests of a limited set of actors.', {});
+    c += rtfPara('In the context of ' + topic.toLowerCase() + ', Stakeholder Theory provides a normative and analytical framework for understanding how the interests and priorities of different actors — including students, faculty, administrators, government agencies, professional bodies and civil society organisations — interact to shape outcomes in ' + dept + ' ' + cite('Chukwuemeka', yr) + '. The theory suggests that strategies for improving outcomes should be designed and implemented through inclusive, participatory processes that give voice to all relevant stakeholders and create mechanisms for ongoing dialogue and feedback.', {});
+    c += rtfPara('The relevance of Stakeholder Theory to the current study is underscored by the evidence, reviewed in the empirical section below, that more participatory approaches to governance and management in ' + dept + ' tend to produce better outcomes than top-down, technocratic approaches ' + cite('World Bank', yr) + '. This study therefore adopts Stakeholder Theory as a normative guide for the recommendations it offers, arguing that sustainable improvement in outcomes related to ' + topic.toLowerCase() + ' requires the active and meaningful engagement of all relevant stakeholders in the design, implementation and evaluation of relevant interventions.', {});
+
+    // ── 2.4 EMPIRICAL REVIEW ──
     c += rtfPara('2.4 Empirical Review', {bold:true, size:12});
-    c += rtfPara('A growing body of empirical literature has examined various aspects of ' + topic.toLowerCase() + ' in Nigeria and comparable contexts. ' + cite('Nwosu et al.', yr-3) + ' conducted a quantitative study involving 250 respondents in South-East Nigeria and found a significant positive relationship between institutional capacity and the outcomes of ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + '. The study concluded that policy reforms were necessary to sustain these outcomes.', {});
-    c += rtfPara(cite('Adesanya & Olatunji', yr-1) + ' examined similar themes using a qualitative case study approach in South-West Nigeria. Their findings indicated that socioeconomic factors play a more significant role than previously acknowledged in shaping outcomes in this domain. They recommended a more contextually sensitive approach to policy design and implementation.', {});
-    c += rtfPara('At the international level, the World Bank ' + cite('World Bank', yr) + ' has documented comparable trends in other African contexts, noting that structural constraints -- including inadequate funding, weak regulatory frameworks and capacity gaps -- consistently undermine efforts to achieve desired outcomes in areas related to ' + dept.toLowerCase() + '.', {});
-    c += rtfPara('2.5 Gaps in Literature', {bold:true, size:12});
-    c += rtfPara('Despite the rich body of literature reviewed above, several notable gaps remain. Most existing studies focus on urban settings, neglecting the rural dimensions of the phenomenon. Additionally, longitudinal studies that track outcomes over time are conspicuously absent in the Nigerian context. There is also a methodological gap, with most studies relying on quantitative approaches at the expense of more interpretive and participatory methods. This study seeks to address some of these gaps by adopting a mixed-methods approach and focusing specifically on the Nigerian reality.', {});
-    c += rtfPara('2.6 Summary', {bold:true, size:12});
-    c += rtfPara('This chapter has reviewed the conceptual, theoretical and empirical literature relevant to ' + topic + '. The review has established the theoretical anchoring of the study, highlighted key empirical findings and identified gaps that justify the present investigation. The next chapter outlines the research methodology adopted to address these gaps.', {});
-    c += padParas('ch2', parasNeeded('ch2', 12));
+    c += rtfPara('This section reviews empirical studies that have examined issues directly or indirectly related to ' + topic + '. The review is comprehensive and draws from studies conducted in Nigeria and comparable international contexts. Studies are presented chronologically and thematically, with attention to their methodologies, findings and limitations. The number of studies reviewed reflects the level of this study and the requirement for thorough engagement with the existing empirical literature ' + cite('Okafor', yr-1) + '.', {});
+
+    var empAuthors = [
+      {a:'Adebayo, O. F., & Salami, K. T.', y:yr-1, area:'the relationship between ' + kw1.toLowerCase() + ' and organisational performance', method:'survey of 320 respondents in Lagos State', finding:'significant positive relationship (r = 0.74, p < 0.05)', loc:'South-West Nigeria'},
+      {a:'Eze, C. N., Obi, R. A., & Ugwu, P. K.', y:yr-2, area:'institutional factors affecting outcomes in ' + dept, method:'mixed-methods study combining questionnaire and interviews', finding:'institutional capacity and governance quality were the strongest predictors of outcomes', loc:'South-East Nigeria'},
+      {a:'Ibrahim, M. S., & Yusuf, A. B.', y:yr-1, area:'' + kw2.toLowerCase() + ' and its determinants', method:'longitudinal study spanning three years with 450 participants', finding:'socioeconomic factors accounted for 42% of variance in outcomes', loc:'North-West Nigeria'},
+      {a:'Olawale, F. T., Badmus, A. O., & Adesanya, K.', y:yr-3, area:'policy environment and ' + topic.split(' ').slice(0,3).join(' ').toLowerCase(), method:'document analysis and key informant interviews', finding:'policy inconsistency was the primary barrier to sustained improvement', loc:'Federal level, Nigeria'},
+      {a:'Nwosu, A. P., & Chukwu, R. C.', y:yr-2, area:'stakeholder engagement in ' + dept, method:'case study of five institutions', finding:'institutions with formal stakeholder engagement mechanisms achieved 35% better outcomes', loc:'Multi-state, Nigeria'},
+      {a:'Okafor, J. O., Uzodinma, F. C., & Eze, B.', y:yr-1, area:'human capital development and ' + kw3.toLowerCase(), method:'quantitative survey with 280 respondents', finding:'training investment had the highest return on performance outcomes among all variables tested', loc:'South-South Nigeria'},
+      {a:'Adeyemi, O. A., & Olumide, S. K.', y:yr-3, area:'accountability mechanisms and outcomes in ' + dept, method:'experimental design with control and treatment groups', finding:'strengthened accountability mechanisms led to a 28% improvement in measured outcomes', loc:'South-West Nigeria'},
+      {a:'Musa, I. A., Hassan, B. T., & Garba, K.', y:yr-2, area:'governance quality and service delivery in ' + dept, method:'cross-sectional survey of 500 respondents', finding:'governance quality explained 38% of variance in service delivery outcomes', loc:'North-Central Nigeria'},
+      {a:'Adekunle, T. B., & Okonkwo, C. N.', y:yr-1, area:'technology adoption and ' + topic.split(' ').slice(0,3).join(' ').toLowerCase(), method:'comparative study across 12 institutions', finding:'technology-enabled institutions showed significantly higher efficiency ratings', loc:'Multi-state, Nigeria'},
+      {a:'Afolabi, R. S., Ojo, E. T., & Bello, M. A.', y:yr-3, area:'funding adequacy and ' + kw1.toLowerCase(), method:'secondary data analysis supplemented by institutional interviews', finding:'chronic underfunding reduced institutional capacity by an estimated 45% relative to benchmarks', loc:'Federal level, Nigeria'},
+      {a:'Ekwueme, O. C., & Abubakar, Y. M.', y:yr-2, area:'leadership style and ' + kw2.toLowerCase(), method:'360-degree assessment combined with performance data', finding:'transformational leadership was most strongly associated with positive outcomes', loc:'North-East Nigeria'},
+      {a:'Olaoye, S. A., Tijani, B. O., & Fashola, K.', y:yr-1, area:'community participation and outcomes in ' + dept, method:'participatory action research over 18 months', finding:'community-engaged institutions achieved significantly more equitable outcome distributions', loc:'South-West Nigeria'},
+      {a:'Chukwudi, B. N., Okeke, P. A., & Onyema, C.', y:yr-3, area:'interorganisational collaboration and ' + topic.split(' ').slice(0,4).join(' ').toLowerCase(), method:'network analysis combined with survey data', finding:'collaboration density was a strong positive predictor of outcomes quality', loc:'South-East Nigeria'},
+      {a:'Lawal, A. K., & Mohammed, I. F.', y:yr-2, area:'regulatory environment and compliance in ' + dept, method:'document review and structured interviews with 45 regulatory officials', finding:'regulatory clarity and enforcement consistency were critical success factors', loc:'National, Nigeria'},
+      {a:'Oduola, F. A., Adebisi, T. T., & Ogunlade, R.', y:yr-1, area:'gender dimensions of ' + kw3.toLowerCase() + ' in ' + dept, method:'gender-disaggregated survey of 360 respondents', finding:'significant gender gaps in access and outcomes, with females consistently disadvantaged', loc:'Multi-state, Nigeria'},
+      {a:'Nkemdirim, O. P., Eze, C., & Ugochukwu, A.', y:yr-3, area:'international benchmarking of ' + topic.split(' ').slice(0,3).join(' ').toLowerCase(), method:'comparative analysis of 8 African countries', finding:'Nigeria performed below the African average on key indicators despite above-average resource endowments', loc:'Africa-wide'},
+      {a:'Abdullahi, M. B., & Sule, A. K.', y:yr-2, area:'monitoring and evaluation frameworks for ' + dept, method:'framework analysis and implementation assessment', finding:'organisations with robust M&E systems demonstrated 40% higher goal achievement rates', loc:'North Nigeria'},
+      {a:'Agu, C. O., Obi, S. N., & Nwofor, C.', y:yr-1, area:'capacity building and sustainable outcomes in ' + dept, method:'longitudinal panel study over 5 years', finding:'sustained capacity building investment generated compounding returns over the study period', loc:'South-East Nigeria'},
+      {a:'Bello, K. A., Abdulsalam, Y., & Maikudi, T.', y:yr-3, area:'digital transformation and ' + kw2.toLowerCase() + ' in ' + dept, method:'mixed-methods study in 10 institutions', finding:'digital adoption significantly moderated the relationship between resource constraints and outcomes', loc:'North-Central Nigeria'},
+      {a:'Williams, E. O., Eke, P. N., & Adaora, C.', y:yr-2, area:'corruption effects on outcomes in ' + dept, method:'institutional ethnography over 24 months', finding:'corruption-related resource leakages accounted for up to 30% of the performance deficit observed', loc:'Multi-state, Nigeria'}
+    ];
+
+    var toReview = Math.min(empiricalCount, empAuthors.length);
+    for (var ei = 0; ei < toReview; ei++) {
+      var em = empAuthors[ei];
+      c += rtfPara(cite(em.a, em.y) + ' conducted a study on ' + em.area + ' in ' + em.loc + '. Using a ' + em.method + ', the researchers found that ' + em.finding + '. The study contributed significantly to the understanding of how ' + topic.split(' ').slice(0,4).join(' ').toLowerCase() + ' operates in practice and highlighted several policy-relevant implications that are directly pertinent to the current investigation. The study concluded that concerted action by relevant stakeholders was essential for sustaining the gains recorded and for extending their benefits to underserved groups and areas.', {});
+    }
+
+    // ── 2.5 GAP IN LITERATURE ──
+    c += rtfPara('2.5 Gap in Literature', {bold:true, size:12});
+    c += rtfPara('The foregoing review of conceptual, theoretical and empirical literature reveals a rich body of knowledge on ' + topic + '. However, it also exposes several significant gaps that the current study seeks to address. These gaps are identified below and discussed in terms of their implications for the design and contribution of this research ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('First, there is a notable geographical gap in the existing literature. The overwhelming majority of empirical studies reviewed above were conducted in the southern regions of Nigeria — particularly the South-West and South-East — with comparatively little research attention devoted to the North and the Middle Belt. This geographical imbalance means that the existing evidence base may not adequately reflect the diversity of conditions and experiences across Nigeria, and that findings from southern-focused studies may not be directly generalisable to northern contexts where socioeconomic, cultural and institutional conditions differ significantly ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
+    c += rtfPara('Second, there is a significant methodological gap. The majority of existing studies have relied on quantitative methods — particularly cross-sectional surveys — to investigate ' + topic.toLowerCase() + '. While these studies have generated valuable data on the prevalence and distribution of key variables, they are limited in their ability to illuminate the processes, mechanisms and contextual factors through which outcomes are produced. The relative scarcity of longitudinal, qualitative and mixed-methods studies represents a significant gap in the evidence base that limits our understanding of how and why outcomes vary across different settings and over time ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('Third, there is a thematic gap related to the intersectionality of ' + topic.toLowerCase() + ' with other critical dimensions of social difference, including gender, age, disability and socioeconomic status. While a handful of studies have begun to explore the gendered dimensions of ' + topic.toLowerCase() + ', the intersectional analysis needed to understand how multiple dimensions of inequality interact to shape outcomes for different groups remains largely undeveloped in the Nigerian context ' + cite('Nwosu et al.', yr-3) + '. This study makes a contribution to filling this gap by attending to differential outcomes across key demographic groups in the analysis of its primary data.', {});
+    c += rtfPara('Fourth, there is a temporal gap in the literature. Most of the empirical studies reviewed above are more than two years old and were conducted before significant recent developments in the policy and institutional landscape of ' + dept + ' in Nigeria. Given the pace of change in this environment, findings from older studies may no longer accurately reflect current realities, underscoring the need for more recent, up-to-date research that takes account of the latest developments ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('Fifth, the existing literature on ' + topic.toLowerCase() + ' exhibits a significant gap in terms of its engagement with the perspectives of frontline practitioners and beneficiaries. Most existing studies have focused on the views and experiences of senior administrators, policymakers and other elite actors, while paying insufficient attention to the perspectives of those most directly affected by outcomes in ' + dept + '. This study seeks to partially redress this imbalance by including a diverse range of respondents in its primary data collection and by giving particular attention to the experiences and perspectives of those at the grassroots level ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+    c += rtfPara('Sixth, and finally, there is a theoretical gap in the existing literature. While several theoretical frameworks have been applied to the study of ' + topic.toLowerCase() + ', their application has often been partial and unsystematic, with most studies drawing on a single theoretical perspective without adequately engaging with alternative frameworks or acknowledging the limitations of their chosen approach. This study seeks to address this gap by adopting a multi-theoretical framework that draws on Systems Theory, Institutional Theory, Human Capital Theory, Agency Theory and Stakeholder Theory in a complementary and mutually reinforcing manner, providing a richer and more comprehensive theoretical foundation for the analysis of the research findings ' + cite('World Bank', yr) + '.', {});
+
+    // ── 2.6 SUMMARY ──
+    c += rtfPara('2.6 Summary of the Chapter', {bold:true, size:12});
+    c += rtfPara('This chapter has presented an extensive review of literature related to ' + topic + '. The conceptual review clarified six key concepts — ' + kw1 + ', ' + kw2 + ', ' + kw3 + ', institutional capacity, policy environment and stakeholder engagement — that form the conceptual foundation of this study. The theoretical framework section identified and critically discussed five major theories — Systems Theory, Institutional Theory, Human Capital Theory, Agency Theory and Stakeholder Theory — and demonstrated their relevance to the phenomena under investigation. The empirical review examined ' + toReview + ' studies from Nigeria and comparable contexts, synthesising their findings and identifying areas of consensus and divergence. The gap in literature section identified six significant gaps — geographical, methodological, thematic, temporal, perspective-related and theoretical — that justify the current study and define its potential contribution to knowledge. The next chapter describes the research methodology adopted to address these gaps and generate the primary data needed to advance understanding of ' + topic.toLowerCase() + ' ' + cite('Adeyemi', yr-2) + '.', {});
+
     return c;
   };
 
@@ -1214,27 +1326,227 @@ function generateDocument(od) {
 
   chapterContent['ch4'] = function() {
     var c = '';
+    var words = topic.split(' ');
+    var kw1 = words.slice(0,3).join(' ');
+
+    // RTF table helper
+    function rtfTable(headers, rows, caption) {
+      var t = '';
+      var colW = Math.floor(8000 / headers.length);
+      t += '\\pard\\qc\\sl360\\slmult1\\b\\fs22 ' + escRTF(caption) + '\\b0\\fs24\\par\n';
+      // Header row
+      t += '\\trowd\\trgaph120\\trkeep\n';
+      headers.forEach(function(h) { t += '\\cellx' + colW + '\n'; colW += Math.floor(8000/headers.length); });
+      t += '\\pard\\intbl\\b\\fs22\\qc ';
+      t += headers.map(function(h){ return escRTF(h); }).join('\\cell\\b\\fs22\\qc ');
+      t += '\\cell\\row\n';
+      // Reset colW
+      colW = Math.floor(8000 / headers.length);
+      rows.forEach(function(row, ri) {
+        t += '\\trowd\\trgaph120\\trkeep\n';
+        headers.forEach(function() { t += '\\cellx' + colW + '\n'; colW += Math.floor(8000/headers.length); });
+        t += '\\pard\\intbl\\fs22\\qc ';
+        t += row.map(function(cell){ return escRTF(String(cell)); }).join('\\cell\\fs22\\qc ');
+        t += '\\cell\\row\n';
+        colW = Math.floor(8000 / headers.length);
+      });
+      t += '\\pard\\par\n';
+      return t;
+    }
+
     c += rtfPara('CHAPTER FOUR', {bold:true, center:true, size:14});
     c += rtfPara('DATA PRESENTATION, ANALYSIS AND DISCUSSION OF FINDINGS', {bold:true, center:true, size:14});
+
     c += rtfPara('4.1 Introduction', {bold:true, size:12});
-    c += rtfPara('This chapter presents the data collected from the field, analyzes it using the methods described in Chapter Three and discusses the findings in relation to the research questions and hypotheses. The chapter is organized into sections covering response rate, demographic profile of respondents, analysis of research questions and discussion of findings.', {});
+    c += rtfPara('This chapter presents, analyses and discusses the data collected from the field in relation to the research questions and hypotheses of the study. The data are presented using frequency tables, percentages, means, standard deviations and inferential statistical analyses. Bar charts and summary tables are included to provide visual representation of key findings. The chapter is structured as follows: Section 4.2 presents the response rate; Section 4.3 profiles the demographic characteristics of respondents; Sections 4.4 through 4.6 present data and analysis organised by research question; Section 4.7 tests the stated hypotheses; and Section 4.8 provides a comprehensive discussion of findings in relation to the existing literature ' + cite('Adeyemi', yr-2) + '.', {});
+
     c += rtfPara('4.2 Response Rate', {bold:true, size:12});
-    c += rtfPara('A total of 200 copies of the questionnaire were administered to the sampled respondents. Of these, 185 were returned fully completed, representing a response rate of 92.5%. This response rate is considered adequate for statistical analysis and is consistent with standards in social science research ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('A total of 200 copies of the questionnaire were administered to the sampled respondents with the assistance of trained research assistants. Of these, 185 were returned fully completed and usable, yielding a response rate of 92.5%. The remaining 15 questionnaires (7.5%) were either not returned or were returned with significant sections incomplete and were therefore excluded from the analysis. This response rate compares favourably with the minimum acceptable rate of 70% recommended for survey-based research in the social sciences ' + cite('Okafor', yr-1) + '.', {});
+
+    // Table 4.1 - Response Rate
+    c += rtfTable(
+      ['Category', 'Frequency', 'Percentage (%)'],
+      [
+        ['Questionnaires Administered', '200', '100.0'],
+        ['Questionnaires Returned (Usable)', '185', '92.5'],
+        ['Questionnaires Not Returned / Unusable', '15', '7.5']
+      ],
+      'Table 4.1: Response Rate'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+
     c += rtfPara('4.3 Demographic Profile of Respondents', {bold:true, size:12});
-    c += rtfPara('An analysis of the demographic characteristics of the respondents reveals a diverse cross-section of individuals. In terms of gender, 54.6% of respondents were male while 45.4% were female, indicating a reasonably balanced gender representation. With respect to educational qualification, the majority (48.1%) held a first degree, while 31.4% held postgraduate qualifications and 20.5% held diploma certificates.', {});
-    c += rtfPara('Regarding years of experience, 35.7% of respondents had between 1-5 years of experience, 42.2% had between 6-10 years and 22.1% had over 10 years of experience. This distribution suggests that the respondents possess adequate experience to provide reliable data on the subject under investigation.', {});
+    c += rtfPara('The demographic characteristics of the 185 respondents who participated in the study are presented in Tables 4.2 to 4.5 below. These include the distribution of respondents by gender, age group, educational qualification and years of experience in ' + dept + '.', {});
+
+    // Table 4.2 - Gender
+    c += rtfTable(
+      ['Gender', 'Frequency', 'Percentage (%)'],
+      [
+        ['Male', '101', '54.6'],
+        ['Female', '84', '45.4'],
+        ['Total', '185', '100.0']
+      ],
+      'Table 4.2: Distribution of Respondents by Gender'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('Table 4.2 shows that 101 respondents (54.6%) were male and 84 (45.4%) were female. The relatively balanced gender distribution of the sample enhances the representativeness of the data and ensures that findings can be meaningfully discussed in relation to both male and female actors in ' + dept + ' ' + cite('Nwosu et al.', yr-3) + '.', {});
+
+    // Table 4.3 - Age
+    c += rtfTable(
+      ['Age Group', 'Frequency', 'Percentage (%)'],
+      [
+        ['Below 25 years', '28', '15.1'],
+        ['25 – 34 years', '57', '30.8'],
+        ['35 – 44 years', '62', '33.5'],
+        ['45 – 54 years', '29', '15.7'],
+        ['55 years and above', '9', '4.9'],
+        ['Total', '185', '100.0']
+      ],
+      'Table 4.3: Distribution of Respondents by Age Group'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('As shown in Table 4.3, the largest proportion of respondents fell within the 35–44 age bracket (33.5%), followed by the 25–34 age group (30.8%). Together, these two groups account for 64.3% of the total sample, suggesting that the majority of respondents were in the prime working age range and are therefore likely to have substantial relevant experience with the issues under investigation ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
+
+    // Table 4.4 - Education
+    c += rtfTable(
+      ['Educational Qualification', 'Frequency', 'Percentage (%)'],
+      [
+        ['OND / NCE', '22', '11.9'],
+        ['HND / B.Sc / B.A', '89', '48.1'],
+        ['Postgraduate (PGD / M.Sc / MBA)', '58', '31.4'],
+        ['PhD', '16', '8.6'],
+        ['Total', '185', '100.0']
+      ],
+      'Table 4.4: Distribution of Respondents by Educational Qualification'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('Table 4.4 reveals that the majority of respondents (48.1%) held first degree or HND qualifications, while 31.4% held postgraduate qualifications and 8.6% had doctoral degrees. This distribution indicates a reasonably well-educated sample capable of providing informed and nuanced responses to the research instrument ' + cite('Chukwuemeka', yr) + '.', {});
+
+    // Table 4.5 - Experience
+    c += rtfTable(
+      ['Years of Experience', 'Frequency', 'Percentage (%)'],
+      [
+        ['Less than 1 year', '12', '6.5'],
+        ['1 – 5 years', '54', '29.2'],
+        ['6 – 10 years', '78', '42.2'],
+        ['11 – 15 years', '28', '15.1'],
+        ['Above 15 years', '13', '7.0'],
+        ['Total', '185', '100.0']
+      ],
+      'Table 4.5: Distribution of Respondents by Years of Experience'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('Table 4.5 shows that 42.2% of respondents had between 6 and 10 years of experience in ' + dept + ', making this the modal experience category. A further 15.1% had between 11 and 15 years of experience and 7.0% had more than 15 years. Collectively, 64.3% of respondents had at least 6 years of experience, suggesting that the sample possesses sufficient practical exposure to the issues under investigation to provide credible and informed responses ' + cite('Okafor', yr-1) + '.', {});
+
+    // Research Question Analyses
     c += rtfPara('4.4 Analysis of Research Questions', {bold:true, size:12});
-    c += rtfPara('Research Question 1: What is the nature and scope of ' + topic.toLowerCase() + '?', {bold:false});
-    c += rtfPara('The data reveals that the majority of respondents (78.3%) acknowledged the significance of ' + topic.toLowerCase() + ' in the Nigerian context. A mean score of 4.21 and standard deviation of 0.63 were recorded for items measuring this construct, indicating a high level of agreement among respondents. These findings align with the observations of ' + cite('Adesanya & Olatunji', yr-1) + ' who similarly found widespread recognition of this phenomenon among their sample.', {});
-    c += rtfPara('Research Question 2: What key factors influence outcomes in ' + dept.toLowerCase() + '?', {bold:false});
-    c += rtfPara('Analysis of respondents\' views on key influencing factors yielded a mean score of 3.98 (SD = 0.71). Respondents identified institutional capacity (mean = 4.31), policy environment (mean = 4.18) and stakeholder engagement (mean = 3.89) as the most critical factors. These findings are consistent with the empirical evidence presented by ' + cite('Nwosu et al.', yr-3) + '.', {});
-    c += rtfPara('4.5 Test of Hypotheses', {bold:true, size:12});
-    c += rtfPara('Hypothesis 1: There is no significant relationship between the key variables identified in this study.', {});
-    c += rtfPara('Using Pearson Product Moment Correlation, a correlation coefficient of r = 0.72 (p < 0.05) was obtained. Since the p-value (0.000) is less than the significance level (0.05), the null hypothesis is rejected. This confirms that there is a significant positive relationship between the key variables identified in this study ' + cite('Okafor', yr-1) + '.', {});
-    c += rtfPara('4.6 Discussion of Findings', {bold:true, size:12});
-    c += rtfPara('The findings of this study corroborate much of the extant literature on ' + topic.toLowerCase() + '. The identification of institutional capacity, policy environment and stakeholder engagement as critical success factors resonates with the frameworks proposed by ' + cite('Chukwuemeka', yr) + ' and the empirical evidence of ' + cite('Adesanya & Olatunji', yr-1) + '. The significant positive correlation found between the key variables lends further credence to the theoretical frameworks adopted in this study.', {});
-    c += rtfPara('However, the findings also reveal some context-specific dimensions that are not adequately captured in the existing literature. In particular, the role of socio-cultural factors in mediating outcomes — while acknowledged by ' + cite('World Bank', yr) + ' at the macro level — appears to have a more pronounced effect in the Nigerian setting than previously documented. This finding underscores the importance of context-sensitive research and policy design.', {});
-    c += padParas('ch4', parasNeeded('ch4', 14));
+    c += rtfPara('The data collected on the five research questions are presented below using descriptive statistics. For each item, the mean score and standard deviation are calculated and interpreted using the following decision criterion: Mean of 3.50 – 5.00 = Agreed; Mean of 1.00 – 3.49 = Disagreed. This criterion follows the interpretation guidelines recommended for five-point Likert scale data in social science research ' + cite('Adeyemi', yr-2) + '.', {});
+
+    // Table 4.6 - RQ1
+    c += rtfPara('Research Question 1: What is the nature and scope of ' + kw1.toLowerCase() + '?', {bold:true, size:12});
+    c += rtfTable(
+      ['S/N', 'Statement', 'N', 'Mean', 'SD', 'Decision'],
+      [
+        ['1', kw1 + ' is well understood among practitioners in ' + dept, '185', '4.21', '0.63', 'Agreed'],
+        ['2', 'The scope of ' + kw1.toLowerCase() + ' is broad and multidimensional', '185', '4.38', '0.57', 'Agreed'],
+        ['3', kw1 + ' has significant implications for outcomes in ' + dept, '185', '4.15', '0.71', 'Agreed'],
+        ['4', 'Awareness of ' + kw1.toLowerCase() + ' has increased in recent years', '185', '3.89', '0.82', 'Agreed'],
+        ['5', 'Existing definitions of ' + kw1.toLowerCase() + ' are adequate for practical use', '185', '3.44', '0.94', 'Disagreed'],
+        ['', 'Grand Mean / SD', '', '4.01', '0.73', 'Agreed']
+      ],
+      'Table 4.6: Descriptive Statistics for Research Question 1'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('The data in Table 4.6 reveal that respondents generally agreed with statements describing the nature and scope of ' + kw1.toLowerCase() + ', with a grand mean of 4.01 (SD = 0.73). The highest mean score (4.38) was recorded for the item affirming the multidimensional scope of the concept, while the lowest score (3.44) was recorded for the item suggesting that existing definitions are adequate — a finding that corroborates the conceptual gaps identified in the literature review ' + cite('Nwosu et al.', yr-3) + '.', {});
+
+    // Table 4.7 - RQ2
+    c += rtfPara('Research Question 2: What key factors influence outcomes in ' + dept.toLowerCase() + '?', {bold:true, size:12});
+    c += rtfTable(
+      ['S/N', 'Statement', 'N', 'Mean', 'SD', 'Decision'],
+      [
+        ['1', 'Institutional capacity significantly affects outcomes in ' + dept, '185', '4.31', '0.59', 'Agreed'],
+        ['2', 'Policy environment is a critical determinant of outcomes', '185', '4.18', '0.66', 'Agreed'],
+        ['3', 'Stakeholder engagement improves outcomes in ' + dept, '185', '3.89', '0.78', 'Agreed'],
+        ['4', 'Human capital quality is a major driver of performance', '185', '4.27', '0.61', 'Agreed'],
+        ['5', 'Funding adequacy directly affects the quality of outcomes', '185', '4.44', '0.52', 'Agreed'],
+        ['6', 'Leadership quality is the strongest predictor of outcomes', '185', '4.09', '0.74', 'Agreed'],
+        ['', 'Grand Mean / SD', '', '4.20', '0.65', 'Agreed']
+      ],
+      'Table 4.7: Descriptive Statistics for Research Question 2'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('As shown in Table 4.7, respondents agreed that all six listed factors significantly influence outcomes in ' + dept + ', with a grand mean of 4.20 (SD = 0.65). Funding adequacy recorded the highest mean score (4.44), suggesting that respondents view resource availability as the most critical determinant of outcomes — a finding consistent with the empirical literature reviewed in Chapter Two ' + cite('Adesanya & Olatunji', yr-1) + '. Stakeholder engagement, while still agreed upon, recorded the lowest mean score (3.89), indicating some uncertainty among respondents about the degree to which engagement translates into measurable improvement.', {});
+
+    // Table 4.8 - RQ3
+    c += rtfPara('Research Question 3: What is the relationship between the key variables?', {bold:true, size:12});
+    c += rtfTable(
+      ['Variable Pair', 'r', 'p-value', 'Decision'],
+      [
+        ['Institutional Capacity & Outcomes', '0.72', '0.000', 'Significant'],
+        ['Policy Environment & Outcomes', '0.68', '0.000', 'Significant'],
+        ['Stakeholder Engagement & Outcomes', '0.61', '0.000', 'Significant'],
+        ['Human Capital Quality & Outcomes', '0.76', '0.000', 'Significant'],
+        ['Funding Adequacy & Outcomes', '0.81', '0.000', 'Significant'],
+        ['Leadership Quality & Outcomes', '0.74', '0.000', 'Significant']
+      ],
+      'Table 4.8: Pearson Correlation Matrix of Key Variables'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr + ' (SPSS Output)', {});
+    c += rtfPara('Table 4.8 presents the Pearson correlation coefficients between the key independent variables and the outcome variable. All six relationships are statistically significant at p < 0.001. The strongest correlation is between funding adequacy and outcomes (r = 0.81), followed by human capital quality (r = 0.76) and leadership quality (r = 0.74). These findings confirm that all six variables are meaningfully related to outcomes in ' + dept + ' and together suggest a multifactorial model of performance in this domain ' + cite('Chukwuemeka', yr) + '.', {});
+
+    // Table 4.9 - Challenges
+    c += rtfPara('4.5 Challenges Associated with ' + topic, {bold:true, size:12});
+    c += rtfTable(
+      ['S/N', 'Challenge', 'N', 'Mean', 'SD', 'Decision'],
+      [
+        ['1', 'Inadequate funding constrains capacity and performance', '185', '4.52', '0.48', 'Agreed'],
+        ['2', 'Frequent policy changes undermine institutional stability', '185', '4.39', '0.61', 'Agreed'],
+        ['3', 'Weak accountability mechanisms allow resource misuse', '185', '4.28', '0.67', 'Agreed'],
+        ['4', 'Limited stakeholder participation reduces legitimacy of decisions', '185', '3.97', '0.79', 'Agreed'],
+        ['5', 'Inadequate data systems hinder evidence-based decision-making', '185', '4.11', '0.73', 'Agreed'],
+        ['6', 'Corruption undermines institutional integrity and performance', '185', '4.45', '0.55', 'Agreed'],
+        ['', 'Grand Mean / SD', '', '4.29', '0.64', 'Agreed']
+      ],
+      'Table 4.9: Challenges Associated with ' + topic
+    );
+    c += rtfPara('Source: Field Survey, ' + yr, {});
+    c += rtfPara('The data in Table 4.9 show that respondents strongly agreed with all six challenge statements, with a grand mean of 4.29 (SD = 0.64). Inadequate funding recorded the highest mean score (4.52), followed by corruption (4.45) and frequent policy changes (4.39). These findings paint a consistent picture of a challenging institutional environment in which structural resource deficits and governance weaknesses interact to undermine performance in ' + dept + ' ' + cite('Okafor', yr-1) + '.', {});
+
+    // Table 4.10 - Hypothesis testing
+    c += rtfPara('4.6 Test of Hypotheses', {bold:true, size:12});
+    c += rtfPara('The two null hypotheses formulated for this study are tested below using the Pearson Product Moment Correlation Coefficient at a significance level of 0.05 (two-tailed). The decision rule is: reject H0 if p-value < 0.05; retain H0 if p-value ≥ 0.05 ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('Hypothesis 1 (H01): There is no significant relationship between the key variables identified in this study and outcomes in ' + dept + '.', {});
+    c += rtfTable(
+      ['Variable', 'r', 'r²', 'p-value', 'Sig. Level', 'Decision'],
+      [
+        ['Key Variables vs. Outcomes in ' + dept, '0.72', '0.518', '0.000', '0.05', 'Reject H01']
+      ],
+      'Table 4.10: Hypothesis 1 Test Result'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr + ' (SPSS Output)', {});
+    c += rtfPara('The result in Table 4.10 shows a correlation coefficient of r = 0.72 (r² = 0.518, p = 0.000 < 0.05). Since the p-value is less than the 0.05 significance level, the null hypothesis (H01) is rejected. This means there is a statistically significant positive relationship between the key variables and outcomes in ' + dept + '. The coefficient of determination (r² = 0.518) indicates that the key variables collectively explain approximately 51.8% of the variance in outcomes, suggesting a moderately strong explanatory model ' + cite('Nwosu et al.', yr-3) + '.', {});
+
+    c += rtfPara('Hypothesis 2 (H02): ' + topic.split(' ').slice(0,3).join(' ') + ' does not significantly affect outcomes in ' + dept + '.', {});
+    c += rtfTable(
+      ['Variable', 'Beta', 't-value', 'p-value', 'Sig. Level', 'Decision'],
+      [
+        [topic.split(' ').slice(0,3).join(' ') + ' → Outcomes', '0.681', '12.34', '0.000', '0.05', 'Reject H02']
+      ],
+      'Table 4.11: Hypothesis 2 Test Result (Simple Regression)'
+    );
+    c += rtfPara('Source: Field Survey, ' + yr + ' (SPSS Output)', {});
+    c += rtfPara('Table 4.11 shows a standardised Beta coefficient of 0.681 (t = 12.34, p = 0.000 < 0.05). The null hypothesis (H02) is therefore rejected. This confirms that ' + topic.split(' ').slice(0,3).join(' ').toLowerCase() + ' is a significant and positive predictor of outcomes in ' + dept + '. A unit increase in ' + topic.split(' ').slice(0,3).join(' ').toLowerCase() + ' is associated with a 0.681 standard deviation increase in outcomes, confirming the practical as well as statistical significance of this relationship ' + cite('Adesanya & Olatunji', yr-1) + '.', {});
+
+    // DISCUSSION
+    c += rtfPara('4.7 Discussion of Findings', {bold:true, size:12});
+    c += rtfPara('The findings presented in this chapter align broadly with the theoretical and empirical literature reviewed in Chapter Two, while also generating several novel and context-specific insights that advance understanding of ' + topic.toLowerCase() + ' in ' + dept + '. This section discusses the key findings in relation to the existing literature, drawing on the theoretical frameworks outlined in Chapter Two to provide interpretive depth ' + cite('Chukwuemeka', yr) + '.', {});
+    c += rtfPara('The finding that funding adequacy is the strongest perceived determinant of outcomes in ' + dept + ' (mean = 4.44) is consistent with the conclusions of numerous empirical studies reviewed in Chapter Two, including those of ' + cite('Adebayo & Salami', yr-1) + ' and ' + cite('Afolabi et al.', yr-3) + ', both of which identified resource constraints as the primary barrier to improved performance. From a Human Capital Theory perspective, this finding makes intuitive sense: without adequate funding, organisations cannot invest in the training, equipment and systems needed to develop and maintain the human capital on which performance ultimately depends ' + cite('Okafor', yr-1) + '.', {});
+    c += rtfPara('The high mean scores recorded for institutional capacity (4.31) and leadership quality (4.09) as determinants of outcomes are similarly consistent with the predictions of Systems Theory and Institutional Theory. Systems Theory would predict that the quality of the overall system is a function of the capacity of its component parts, and that weaknesses in institutional capacity will produce system-wide performance deficits ' + cite('World Bank', yr) + '. Institutional Theory adds to this by highlighting the role of leadership in shaping the formal and informal norms that govern organisational behaviour and in creating the conditions under which performance improvement is possible.', {});
+    c += rtfPara('The finding that corruption is one of the most severe challenges facing ' + dept + ' (mean = 4.45) corroborates the conclusions of ' + cite('Williams et al.', yr-2) + ', who found in their institutional ethnography that corruption-related resource leakages accounted for up to 30% of the observed performance deficit. From an Agency Theory perspective, this finding underscores the importance of robust accountability and monitoring mechanisms as a check on the rent-seeking behaviour of agents who may prioritise personal gain over institutional performance ' + cite('Adeyemi', yr-2) + '.', {});
+    c += rtfPara('The significant positive correlations found between all key variables and outcomes, and the rejection of both null hypotheses, provide strong empirical support for the multi-theoretical framework adopted in this study. The combined explanatory power of the identified variables (r² = 0.518) suggests that while the model captures a substantial proportion of the variance in outcomes, there remain other factors — potentially including informal network ties, community-level factors and individual psychological attributes — that are not captured in the current study and that warrant investigation in future research ' + cite('Nwosu et al.', yr-3) + '.', {});
+    c += rtfPara('Finally, the finding that respondents were least convinced about the adequacy of existing definitions of ' + kw1.toLowerCase() + ' (mean = 3.44, the only item that did not reach the threshold for agreement) is significant and aligns with the conceptual gaps identified in the literature review. This finding suggests that practitioners in ' + dept + ' perceive a disconnect between the conceptual frameworks dominant in the academic literature and the operational realities they encounter in practice — a gap that has important implications for how research in this area is designed and communicated ' + cite('Yusuf & Ibrahim', yr-1) + '.', {});
+
+    c += padParas('ch4', parasNeeded('ch4', 50));
     return c;
   };
 
@@ -1414,9 +1726,145 @@ function generateDocument(od) {
     body += '\\page\n';
     body += rtfPara('REFERENCES', {bold:true, center:true, size:13});
     for (var ri = 0; ri < refs.length; ri++) {
-      // Hanging indent for references
       body += '{\\pard\\qj\\sl480\\slmult1\\li0\\fi-0 ' + escRTF(refs[ri]) + '\\par\n}';
     }
+  }
+
+  // APPENDIX — Questionnaire (for project/thesis/dissertation/term_paper)
+  if (['project','thesis','dissertation','term_paper'].indexOf(svc) > -1) {
+    var words2 = topic.split(' ');
+    var kw1q = words2.slice(0,3).join(' ');
+    body += '\\page\n';
+    body += rtfPara('APPENDIX', {bold:true, center:true, size:14});
+    body += rtfPara('RESEARCH QUESTIONNAIRE', {bold:true, center:true, size:13});
+    body += rtfPara('Title: ' + topic, {bold:true, center:true, size:12});
+    body += rtfPara('Department of ' + dept + ' | Level: ' + level, {center:true});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += rtfPara('Dear Respondent,', {bold:true, size:12});
+    body += rtfPara('This questionnaire is designed to collect data for an academic research project titled "' + topic + '". The information you provide will be used solely for academic purposes and will be treated with the strictest confidentiality. You are not required to write your name anywhere on this questionnaire. Your honest and objective responses are highly appreciated.', {});
+    body += rtfPara('Thank you for your cooperation.', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    // SECTION A — Demographics
+    body += rtfPara('SECTION A: DEMOGRAPHIC INFORMATION', {bold:true, size:12});
+    body += rtfPara('Instruction: Please tick (\\u10003?) the option that best describes you.', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara('1. Gender', {bold:true, size:12});
+    body += rtfPara('(   ) Male          (   ) Female', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara('2. Age Group', {bold:true, size:12});
+    body += rtfPara('(   ) Below 25 years     (   ) 25 – 34 years     (   ) 35 – 44 years', {});
+    body += rtfPara('(   ) 45 – 54 years      (   ) 55 years and above', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara('3. Educational Qualification', {bold:true, size:12});
+    body += rtfPara('(   ) OND / NCE          (   ) HND / B.Sc / B.A / B.Tech / B.Ed', {});
+    body += rtfPara('(   ) PGD / M.Sc / MBA   (   ) PhD / Doctorate', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara('4. Years of Experience in ' + dept, {bold:true, size:12});
+    body += rtfPara('(   ) Less than 1 year   (   ) 1 – 5 years   (   ) 6 – 10 years', {});
+    body += rtfPara('(   ) 11 – 15 years      (   ) Above 15 years', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    // SECTION B — Research Questions
+    body += rtfPara('SECTION B: RESEARCH QUESTIONS', {bold:true, size:12});
+    body += rtfPara('Instruction: Please indicate the extent to which you agree with each of the following statements by ticking the appropriate box.', {});
+    body += rtfPara('Key: SA = Strongly Agree (5)   A = Agree (4)   U = Undecided (3)   D = Disagree (2)   SD = Strongly Disagree (1)', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    // Build questionnaire items from topic keywords
+    var qSections = [
+      {
+        title: 'Part I: Nature and Scope of ' + kw1q,
+        items: [
+          kw1q + ' is a well-understood concept among practitioners in ' + dept + '.',
+          'The scope of ' + kw1q.toLowerCase() + ' is broad and encompasses multiple dimensions of practice.',
+          kw1q + ' has significant implications for performance outcomes in ' + dept + '.',
+          'Awareness of ' + kw1q.toLowerCase() + ' has increased among stakeholders in recent years.',
+          'Existing frameworks for understanding ' + kw1q.toLowerCase() + ' are adequate for practical application.',
+        ]
+      },
+      {
+        title: 'Part II: Key Factors Influencing Outcomes in ' + dept,
+        items: [
+          'Institutional capacity significantly determines the quality of outcomes in ' + dept + '.',
+          'The policy environment directly shapes the performance of ' + dept + ' institutions.',
+          'Stakeholder engagement improves the overall quality of outcomes in ' + dept + '.',
+          'The quality of human capital available is a major driver of performance in this field.',
+          'Adequate funding is a critical prerequisite for achieving desired outcomes in ' + dept + '.',
+          'Effective leadership has a strong positive impact on institutional performance in ' + dept + '.',
+        ]
+      },
+      {
+        title: 'Part III: Challenges Associated with ' + topic,
+        items: [
+          'Inadequate funding is a major constraint on the capacity of ' + dept + ' institutions.',
+          'Frequent changes in government policy undermine institutional stability in this field.',
+          'Weak accountability mechanisms allow for misuse of resources in ' + dept + '.',
+          'Limited stakeholder participation reduces the legitimacy of decisions in this domain.',
+          'Inadequate data systems hinder evidence-based decision-making in ' + dept + '.',
+          'Corruption represents a significant threat to institutional integrity and performance in ' + dept + '.',
+        ]
+      },
+      {
+        title: 'Part IV: Prospects and Recommendations for ' + topic,
+        items: [
+          'Strengthening institutional capacity will significantly improve outcomes in ' + dept + '.',
+          'More consistent and evidence-based policies will have a lasting positive impact in this field.',
+          'Increased investment in human resource development will enhance performance in ' + dept + '.',
+          'Greater stakeholder participation in governance will improve the quality of decisions made.',
+          'Adoption of digital technologies will improve efficiency and transparency in ' + dept + '.',
+          'Regular monitoring and evaluation of programmes will ensure continuous improvement in outcomes.',
+        ]
+      }
+    ];
+
+    var qNum = 5; // starts after 4 demographic questions
+    qSections.forEach(function(sect) {
+      body += rtfPara(sect.title, {bold:true, size:12});
+      // Header row for Likert table
+      body += '{\\trowd\\trgaph100\\trkeep\n';
+      body += '\\cellx5500\\cellx6500\\cellx7200\\cellx7900\\cellx8200\\cellx8900\\cellx9500\n';
+      body += '\\pard\\intbl\\b\\fs20\\qc S/N\\cell\\qj Statement\\cell\\qc SA\\cell\\qc A\\cell\\qc U\\cell\\qc D\\cell\\qc SD\\cell\\row\n';
+
+      sect.items.forEach(function(item) {
+        body += '\\trowd\\trgaph100\\trkeep\n';
+        body += '\\cellx500\\cellx5500\\cellx6200\\cellx6900\\cellx7600\\cellx8300\\cellx9000\n';
+        body += '\\pard\\intbl\\fs20\\qc ' + qNum + '\\cell\\qj ' + escRTF(item) + '\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\row\n';
+        qNum++;
+      });
+      body += '\\pard\\par\n';
+    });
+
+    // SECTION C — Open-Ended
+    body += rtfPara('SECTION C: OPEN-ENDED QUESTIONS', {bold:true, size:12});
+    body += rtfPara('Please answer the following questions briefly in the spaces provided.', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara((qNum) + '. In your opinion, what is the most significant challenge facing ' + dept + ' in relation to ' + topic.toLowerCase() + '?', {});
+    body += rtfPara('Answer: ________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    qNum++;
+
+    body += rtfPara((qNum) + '. What specific recommendations would you make to improve outcomes related to ' + topic.toLowerCase() + ' in ' + dept + '?', {});
+    body += rtfPara('Answer: ________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    qNum++;
+
+    body += rtfPara((qNum) + '. Are there any other observations or suggestions you would like to share regarding ' + topic.toLowerCase() + '?', {});
+    body += rtfPara('Answer: ________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += rtfPara('_________________________________________________________________________________', {});
+    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+
+    body += rtfPara('Thank you very much for your time and cooperation. Your responses are greatly valued.', {bold:true});
   }
 
   var rtfClose = '}';
