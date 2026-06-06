@@ -944,9 +944,9 @@ function generateDocument(od) {
   var body = '';
 
   // COVER PAGE — title only, centered, 14pt
-  body += '{\\pard\\qc\\sl480\\slmult1\\par\\par\\par\\par\\par\\par\n';
+  body += '\\pard\\qc\\sl480\\slmult1\\par\\par\\par\\par\\par\\par\n';
   body += '\\b\\fs28 ' + escRTF(topic.toUpperCase()) + '\\b0\\fs24\\par\n';
-  body += '\\page}\n';
+  body += '\\page\n';
 
   // Determine chapters to write
   var toWrite = [];
@@ -1330,27 +1330,43 @@ function generateDocument(od) {
     var kw1 = words.slice(0,3).join(' ');
 
     // RTF table helper
+    // Plain-text table — universally compatible with all Word/WPS versions
     function rtfTable(headers, rows, caption) {
       var t = '';
-      var colW = Math.floor(8000 / headers.length);
-      t += '\\pard\\qc\\sl360\\slmult1\\b\\fs22 ' + escRTF(caption) + '\\b0\\fs24\\par\n';
-      // Header row
-      t += '\\trowd\\trgaph120\\trkeep\n';
-      headers.forEach(function(h) { t += '\\cellx' + colW + '\n'; colW += Math.floor(8000/headers.length); });
-      t += '\\pard\\intbl\\b\\fs22\\qc ';
-      t += headers.map(function(h){ return escRTF(h); }).join('\\cell\\b\\fs22\\qc ');
-      t += '\\cell\\row\n';
-      // Reset colW
-      colW = Math.floor(8000 / headers.length);
-      rows.forEach(function(row, ri) {
-        t += '\\trowd\\trgaph120\\trkeep\n';
-        headers.forEach(function() { t += '\\cellx' + colW + '\n'; colW += Math.floor(8000/headers.length); });
-        t += '\\pard\\intbl\\fs22\\qc ';
-        t += row.map(function(cell){ return escRTF(String(cell)); }).join('\\cell\\fs22\\qc ');
-        t += '\\cell\\row\n';
-        colW = Math.floor(8000 / headers.length);
+      // Caption
+      t += '\\pard\\qc\\sl480\\slmult1\\b\\fs24 ' + escRTF(caption) + '\\b0\\par\n';
+
+      // Calculate column widths based on content
+      var colWidths = headers.map(function(h, ci) {
+        var maxLen = h.length;
+        rows.forEach(function(r) { if (r[ci] && String(r[ci]).length > maxLen) maxLen = String(r[ci]).length; });
+        return Math.max(maxLen + 2, 8);
       });
-      t += '\\pard\\par\n';
+
+      function padCell(str, width) {
+        str = String(str);
+        while (str.length < width) str += ' ';
+        return str;
+      }
+
+      function makeLine(cols) {
+        return cols.map(function(col, i) { return padCell(col, colWidths[i]); }).join(' | ');
+      }
+
+      function makeSeparator() {
+        return colWidths.map(function(w) {
+          var s = ''; for (var x=0; x<w; x++) s += '-'; return s;
+        }).join('-+-');
+      }
+
+      // Header
+      t += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22\\b ' + escRTF(makeLine(headers)) + '\\b0\\par\n';
+      t += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22 ' + escRTF(makeSeparator()) + '\\par\n';
+      // Rows
+      rows.forEach(function(row) {
+        t += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22 ' + escRTF(makeLine(row)) + '\\par\n';
+      });
+      t += '\\pard\\sl480\\slmult1\\par\n';
       return t;
     }
 
@@ -1726,7 +1742,7 @@ function generateDocument(od) {
     body += '\\page\n';
     body += rtfPara('REFERENCES', {bold:true, center:true, size:13});
     for (var ri = 0; ri < refs.length; ri++) {
-      body += '{\\pard\\qj\\sl480\\slmult1\\li0\\fi-0 ' + escRTF(refs[ri]) + '\\par\n}';
+      body += '\\pard\\qj\\sl480\\slmult1\\li0\\fi-0 ' + escRTF(refs[ri]) + '\\par\n';
     }
   }
 
@@ -1739,41 +1755,41 @@ function generateDocument(od) {
     body += rtfPara('RESEARCH QUESTIONNAIRE', {bold:true, center:true, size:13});
     body += rtfPara('Title: ' + topic, {bold:true, center:true, size:12});
     body += rtfPara('Department of ' + dept + ' | Level: ' + level, {center:true});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
     body += rtfPara('Dear Respondent,', {bold:true, size:12});
     body += rtfPara('This questionnaire is designed to collect data for an academic research project titled "' + topic + '". The information you provide will be used solely for academic purposes and will be treated with the strictest confidentiality. You are not required to write your name anywhere on this questionnaire. Your honest and objective responses are highly appreciated.', {});
     body += rtfPara('Thank you for your cooperation.', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     // SECTION A — Demographics
     body += rtfPara('SECTION A: DEMOGRAPHIC INFORMATION', {bold:true, size:12});
     body += rtfPara('Instruction: Please tick (\\u10003?) the option that best describes you.', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara('1. Gender', {bold:true, size:12});
     body += rtfPara('(   ) Male          (   ) Female', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara('2. Age Group', {bold:true, size:12});
     body += rtfPara('(   ) Below 25 years     (   ) 25 – 34 years     (   ) 35 – 44 years', {});
     body += rtfPara('(   ) 45 – 54 years      (   ) 55 years and above', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara('3. Educational Qualification', {bold:true, size:12});
     body += rtfPara('(   ) OND / NCE          (   ) HND / B.Sc / B.A / B.Tech / B.Ed', {});
     body += rtfPara('(   ) PGD / M.Sc / MBA   (   ) PhD / Doctorate', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara('4. Years of Experience in ' + dept, {bold:true, size:12});
     body += rtfPara('(   ) Less than 1 year   (   ) 1 – 5 years   (   ) 6 – 10 years', {});
     body += rtfPara('(   ) 11 – 15 years      (   ) Above 15 years', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     // SECTION B — Research Questions
     body += rtfPara('SECTION B: RESEARCH QUESTIONS', {bold:true, size:12});
     body += rtfPara('Instruction: Please indicate the extent to which you agree with each of the following statements by ticking the appropriate box.', {});
     body += rtfPara('Key: SA = Strongly Agree (5)   A = Agree (4)   U = Undecided (3)   D = Disagree (2)   SD = Strongly Disagree (1)', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     // Build questionnaire items from topic keywords
     var qSections = [
@@ -1825,44 +1841,48 @@ function generateDocument(od) {
     var qNum = 5; // starts after 4 demographic questions
     qSections.forEach(function(sect) {
       body += rtfPara(sect.title, {bold:true, size:12});
-      // Header row for Likert table
-      body += '{\\trowd\\trgaph100\\trkeep\n';
-      body += '\\cellx5500\\cellx6500\\cellx7200\\cellx7900\\cellx8200\\cellx8900\\cellx9500\n';
-      body += '\\pard\\intbl\\b\\fs20\\qc S/N\\cell\\qj Statement\\cell\\qc SA\\cell\\qc A\\cell\\qc U\\cell\\qc D\\cell\\qc SD\\cell\\row\n';
+      // Plain-text Likert table header
+      body += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22\\b ' + escRTF('S/N  Statement' + '                                                    ' + 'SA   A    U    D    SD') + '\\b0\\par\n';
+      body += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22 ' + escRTF('----------------------------------------------------------------------') + '\\par\n';
 
       sect.items.forEach(function(item) {
-        body += '\\trowd\\trgaph100\\trkeep\n';
-        body += '\\cellx500\\cellx5500\\cellx6200\\cellx6900\\cellx7600\\cellx8300\\cellx9000\n';
-        body += '\\pard\\intbl\\fs20\\qc ' + qNum + '\\cell\\qj ' + escRTF(item) + '\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\qc (  )\\cell\\row\n';
+        // Truncate item to fit nicely
+        var shortItem = item.length > 55 ? item.substring(0,52)+'...' : item;
+        var pad = ''; for(var p=shortItem.length; p<55; p++) pad += ' ';
+        body += '\\pard\\qj\\sl480\\slmult1\\f0\\fs22 ' + escRTF(qNum + '.   ' + shortItem + pad + '(  ) (  ) (  ) (  ) (  )') + '\\par\n';
+        // If item was truncated, print full text below
+        if (item.length > 55) {
+          body += '\\pard\\qj\\sl480\\slmult1\\f0\\fs20\\i      ' + escRTF(item) + '\\i0\\par\n';
+        }
         qNum++;
       });
-      body += '\\pard\\par\n';
+      body += '\\pard\\sl480\\slmult1\\par\n';
     });
 
     // SECTION C — Open-Ended
     body += rtfPara('SECTION C: OPEN-ENDED QUESTIONS', {bold:true, size:12});
     body += rtfPara('Please answer the following questions briefly in the spaces provided.', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara((qNum) + '. In your opinion, what is the most significant challenge facing ' + dept + ' in relation to ' + topic.toLowerCase() + '?', {});
     body += rtfPara('Answer: ________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
     qNum++;
 
     body += rtfPara((qNum) + '. What specific recommendations would you make to improve outcomes related to ' + topic.toLowerCase() + ' in ' + dept + '?', {});
     body += rtfPara('Answer: ________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
     qNum++;
 
     body += rtfPara((qNum) + '. Are there any other observations or suggestions you would like to share regarding ' + topic.toLowerCase() + '?', {});
     body += rtfPara('Answer: ________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
     body += rtfPara('_________________________________________________________________________________', {});
-    body += '{\\pard\\qj\\sl480\\slmult1\\par}\n';
+    body += '\pard\sl480\slmult1\par\n';
 
     body += rtfPara('Thank you very much for your time and cooperation. Your responses are greatly valued.', {bold:true});
   }
